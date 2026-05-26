@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>App | Mavenory Systems Profit Planner</title>
+  <meta name="description" content="Mavenory Systems Profit Planner dashboard app." />
+  <link rel="stylesheet" href="/assets/styles.css" />
+</head>
+<body>
+  <div id="authPage" class="auth-page">
+    <div class="card auth-card">
+      <div class="auth-left">
+        <a class="brand" href="/"><span class="brand-mark">M</span><span>Mavenory Systems</span></a>
+        <h1 class="section-title">Profit Planner Workspace</h1>
+        <p class="lead">Sign in or create a free workspace to analyze product profitability, pricing, sales and reorder decisions.</p>
+        <ul class="checklist">
+          <li>Free Starter includes all modules for up to 3 SKUs</li>
+          <li>Full Planner unlocks unlimited products</li>
+          <li>Data is stored in your Supabase workspace</li>
+        </ul>
+        <p class="small muted">Do not use secret API keys in browser config. Use only Supabase publishable/anon key.</p>
+      </div>
+      <div class="auth-right">
+        <div id="setupWarning" class="notice danger-note hidden"></div>
+
+        <!-- Sign in / Sign up form -->
+        <div id="authForm">
+          <div class="tabs">
+            <button id="tabSignIn" class="active" data-auth-tab="signin">Sign in</button>
+            <button id="tabSignUp" data-auth-tab="signup">Create free workspace</button>
+          </div>
+          <div class="field"><label>Email</label><input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com" /></div><br>
+          <div class="field"><label>Password</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="Minimum 6 characters" /></div><br>
+          <div id="workspaceNameField" class="field hidden"><label>Workspace name</label><input id="authWorkspaceName" type="text" value="Mavenory Systems Workspace" /></div><br id="workspaceBreak" class="hidden">
+          <button id="authSubmit" class="btn btn-primary" style="width:100%">Sign in</button>
+          <p class="small muted" id="authHint">New users can switch to Create free workspace.</p>
+        </div>
+
+        <!-- Email confirmation pending screen (hidden by default) -->
+        <div id="confirmPending" class="hidden" style="text-align:center;padding:1.5rem 0">
+          <div style="font-size:2.5rem;margin-bottom:1rem">✉️</div>
+          <h2 style="font-size:1.2rem;font-weight:600;margin-bottom:.5rem">Check your email</h2>
+          <p class="muted" style="margin-bottom:1.5rem">We sent a confirmation link to <b id="confirmEmail"></b>. Click it to activate your workspace and sign in automatically.</p>
+          <p class="small muted" style="margin-bottom:1.5rem">No email? Check your spam folder or wait a few seconds.</p>
+          <button id="backToSignIn" class="btn" style="width:100%">Back to sign in</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="appShell" class="app-shell hidden">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span class="brand-mark">M</span><span>Mavenory Systems</span></a>
+      <div>
+        <div class="pill" id="planPill">Free Starter</div>
+        <p class="small muted" id="workspaceLabel">Workspace</p>
+      </div>
+      <nav class="side-nav" id="sideNav">
+        <button data-view="dashboard" class="active">Dashboard</button>
+        <button data-view="products">Products</button>
+        <button data-view="sales">Sales Input</button>
+        <button data-view="reorder">Reorder Planner</button>
+        <button data-view="pricing">Pricing Simulator</button>
+        <button data-view="report">Weekly Report</button>
+        <button data-view="settings">Settings</button>
+      </nav>
+      <div style="margin-top:auto" class="actions">
+        <button class="btn btn-primary" id="upgradeBtn">Upgrade</button>
+        <button class="btn" id="signOutBtn">Sign out</button>
+      </div>
+    </aside>
+    <main class="main">
+      <div id="toast" class="toast hidden"></div>
+      <div class="topbar">
+        <div><h1 class="title" id="viewTitle">Dashboard</h1><p class="muted" id="viewSubtitle">Your weekly operating view.</p></div>
+        <div class="actions"><button class="btn btn-good" id="seedBtn">Reset sample data</button><button class="btn" id="refreshBtn">Refresh</button></div>
+      </div>
+      <div id="limitNotice" class="notice hidden"></div>
+      <section id="viewContainer"></section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/config.js"></script>
+  <script src="/assets/app.js"></script>
+</body>
+</html>
