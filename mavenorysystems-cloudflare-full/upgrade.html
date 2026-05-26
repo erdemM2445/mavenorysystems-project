@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Upgrade | Mavenory Systems Profit Planner</title>
+  <link rel="stylesheet" href="/assets/styles.css" />
+</head>
+<body>
+  <nav class="nav"><div class="nav-inner"><a class="brand" href="/"><span class="brand-mark">M</span><span>Mavenory Systems</span></a><div class="actions"><a class="btn" href="/app.html">Open app</a></div></div></nav>
+  <main class="section"><div class="wrap grid-2">
+    <div>
+      <span class="eyebrow">Full Planner</span>
+      <h1 class="h1">Unlock unlimited products and full weekly shop planning.</h1>
+      <p class="lead">Upgrade when you are ready to analyze your complete SKU list, pricing scenarios, reorder signals and weekly action report.</p>
+      <ul class="checklist">
+        <li>Unlimited products/SKUs</li><li>Product profitability and profit/hour engine</li><li>Inventory reorder planning</li><li>CSV import/export tools</li><li>Weekly action report</li>
+      </ul>
+    </div>
+    <div class="card price-card">
+      <span class="tag full">Recommended</span><h2>Full Planner Monthly</h2><div class="price" id="priceLabel">$9/month</div>
+      <p class="muted">Payment is handled by Lemon Squeezy. Your access is updated automatically after a successful checkout.</p>
+      <div id="upgradeNotice" class="notice hidden"></div>
+      <button id="upgradeNow" class="btn btn-primary" style="width:100%">Upgrade now</button><br><br>
+      <a class="btn" style="width:100%" href="/app.html">Sign in or create account first</a>
+    </div>
+  </div></main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/config.js"></script>
+  <script>
+    const CFG = window.MAVENORY_CONFIG || {}; const notice = document.getElementById('upgradeNotice');
+    document.getElementById('priceLabel').textContent = CFG.FULL_PRICE_LABEL || '$9/month';
+    function show(msg, danger=false){ notice.className = 'notice '+(danger?'danger-note':'success-note'); notice.textContent = msg; notice.classList.remove('hidden'); }
+    document.getElementById('upgradeNow').addEventListener('click', async () => {
+      if(!CFG.SUPABASE_URL || CFG.SUPABASE_URL.includes('YOUR_PROJECT_REF')) return show('Supabase config is not set yet.', true);
+      const sb = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_PUBLISHABLE_KEY);
+      const { data } = await sb.auth.getSession();
+      if(!data.session){ show('Please sign in first, then click Upgrade from inside the app.', true); return; }
+      const res = await fetch('/api/create-checkout', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+data.session.access_token}, body: JSON.stringify({ workspace_name:'Mavenory Systems Workspace' }) });
+      const json = await res.json().catch(()=>({}));
+      if(!res.ok) return show(json.error || 'Checkout could not be created.', true);
+      location.href = json.url;
+    });
+  </script>
+</body>
+</html>
