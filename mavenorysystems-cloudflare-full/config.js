@@ -6,8 +6,9 @@ window.MAVENORY_CONFIG = {
   SITE_URL: "https://mavenorysystems.pages.dev",
 
   // Replace these two values before going live:
-  SUPABASE_URL: "https://YOUR_PROJECT_REF.supabase.co",
-  SUPABASE_PUBLISHABLE_KEY: "sb_publishable_REPLACE_ME",
+  SUPABASE_URL="https://wibwnhjtxbhzcfoxnszo.supabase.co",
+  SUPABASE_PUBLISHABLE_KEY="sb_secret_4byERPDV10l-064qEMIwSw_MelNirex",
+
 
   CURRENCY: "USD",
   SUPPORT_EMAIL: "support@mavenorysystems.com",
