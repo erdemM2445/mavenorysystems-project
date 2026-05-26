@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mavenorysystemsprofitplanner",
+  "compatibility_date": "2026-05-26",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "mavenorysystems-github-ready-supabase-fixed"
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}
