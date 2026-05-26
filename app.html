@@ -1,0 +1,2107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mavenory Systems Profit Planner — SaaS Web App</title>
+  <meta name="description" content="A SaaS-style profit, pricing, reorder and weekly operations planner for Etsy and handmade sellers." />
+  <style>
+
+:root {
+  --bg: #0b1020;
+  --bg-2: #11182c;
+  --panel: rgba(255,255,255,.075);
+  --panel-strong: rgba(255,255,255,.12);
+  --card: rgba(255,255,255,.088);
+  --card-2: rgba(255,255,255,.055);
+  --line: rgba(255,255,255,.13);
+  --text: #f7f4ef;
+  --muted: rgba(247,244,239,.68);
+  --soft: rgba(247,244,239,.44);
+  --brand: #c69c6d;
+  --brand-2: #f3d7a7;
+  --green: #5eead4;
+  --yellow: #facc15;
+  --red: #fb7185;
+  --blue: #93c5fd;
+  --purple: #c4b5fd;
+  --shadow: 0 22px 80px rgba(0,0,0,.38);
+  --radius: 24px;
+  --radius-sm: 15px;
+  --sidebar: 284px;
+}
+
+[data-theme="light"] {
+  --bg: #f6f1ea;
+  --bg-2: #fffaf3;
+  --panel: rgba(255,255,255,.72);
+  --panel-strong: rgba(255,255,255,.92);
+  --card: rgba(255,255,255,.86);
+  --card-2: rgba(255,255,255,.7);
+  --line: rgba(26, 32, 44, .13);
+  --text: #111827;
+  --muted: rgba(17,24,39,.68);
+  --soft: rgba(17,24,39,.47);
+  --shadow: 0 22px 80px rgba(92,64,36,.17);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 18% 7%, rgba(198,156,109,.23), transparent 30%),
+    radial-gradient(circle at 77% 0%, rgba(94,234,212,.13), transparent 25%),
+    linear-gradient(135deg, var(--bg), var(--bg-2) 62%, var(--bg));
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: -.01em;
+}
+
+button, input, select, textarea { font: inherit; }
+
+a { color: inherit; }
+
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+}
+
+.auth-card {
+  width: min(1080px, 100%);
+  display: grid;
+  grid-template-columns: 1.02fr .98fr;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 34px;
+  background: linear-gradient(145deg, var(--panel-strong), var(--panel));
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.auth-hero {
+  padding: 46px;
+  background:
+    linear-gradient(145deg, rgba(198,156,109,.18), rgba(255,255,255,.04)),
+    url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.08'%3E%3Cpath d='M0 30H120M0 60H120M0 90H120M30 0V120M60 0V120M90 0V120'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 850;
+  letter-spacing: -.04em;
+}
+
+.logo-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  color: #111;
+  background: linear-gradient(135deg, var(--brand-2), var(--brand));
+  font-weight: 950;
+  box-shadow: 0 10px 30px rgba(198,156,109,.22);
+}
+
+.auth-hero h1 {
+  font-size: clamp(2.2rem, 6vw, 4.8rem);
+  line-height: .94;
+  margin: 74px 0 20px;
+  letter-spacing: -.08em;
+}
+
+.auth-hero p {
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 1.04rem;
+  max-width: 520px;
+}
+
+.auth-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.auth-list div {
+  padding: 14px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.06);
+  border-radius: 18px;
+  color: var(--muted);
+}
+
+.auth-form {
+  padding: 46px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-form h2 { margin: 0 0 8px; font-size: 1.8rem; letter-spacing: -.045em; }
+.auth-form p { margin: 0 0 24px; color: var(--muted); line-height: 1.55; }
+
+.form-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.field {
+  display: grid;
+  gap: 7px;
+}
+.field label {
+  font-size: .8rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--soft);
+  font-weight: 750;
+}
+.input, .select, .textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.075);
+  color: var(--text);
+  border-radius: 14px;
+  padding: 12px 13px;
+  outline: none;
+  transition: border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+.textarea { min-height: 130px; resize: vertical; line-height: 1.5; }
+.input:focus, .select:focus, .textarea:focus {
+  border-color: rgba(198,156,109,.7);
+  box-shadow: 0 0 0 4px rgba(198,156,109,.12);
+}
+.select option { background: #11182c; color: #fff; }
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.btn {
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.08);
+  color: var(--text);
+  border-radius: 14px;
+  padding: 11px 15px;
+  cursor: pointer;
+  font-weight: 780;
+  transition: transform .15s ease, background .15s ease, border-color .15s ease, opacity .15s ease;
+}
+.btn:hover { transform: translateY(-1px); background: rgba(255,255,255,.13); }
+.btn:active { transform: translateY(0); }
+.btn-primary {
+  background: linear-gradient(135deg, var(--brand-2), var(--brand));
+  color: #1b130a;
+  border-color: transparent;
+}
+.btn-danger { color: var(--red); border-color: rgba(251,113,133,.35); }
+.btn-small { padding: 8px 10px; border-radius: 11px; font-size: .86rem; }
+.btn-ghost { background: transparent; }
+.btn:disabled { opacity: .48; cursor: not-allowed; transform: none; }
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: var(--sidebar) minmax(0, 1fr);
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 22px;
+  border-right: 1px solid var(--line);
+  background: rgba(5, 9, 20, .46);
+  backdrop-filter: blur(18px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow: auto;
+}
+
+.workspace-card {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--card);
+}
+.workspace-card strong { display: block; font-size: .98rem; margin-top: 10px; }
+.workspace-card span { color: var(--muted); font-size: .88rem; overflow-wrap: anywhere; }
+
+.nav {
+  display: grid;
+  gap: 7px;
+}
+.nav button {
+  width: 100%;
+  text-align: left;
+  padding: 12px 13px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 720;
+}
+.nav button:hover { background: rgba(255,255,255,.07); color: var(--text); }
+.nav button.active {
+  color: var(--text);
+  background: linear-gradient(135deg, rgba(198,156,109,.22), rgba(255,255,255,.06));
+  border-color: rgba(198,156,109,.28);
+}
+.nav small {
+  display: block;
+  margin-top: 3px;
+  color: var(--soft);
+  font-weight: 560;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  color: var(--soft);
+  font-size: .82rem;
+  line-height: 1.55;
+}
+
+.main {
+  min-width: 0;
+  padding: 28px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.mobile-menu { display: none; }
+.page-title h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3vw, 3.2rem);
+  letter-spacing: -.07em;
+}
+.page-title p { margin: 6px 0 0; color: var(--muted); line-height: 1.55; }
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.07);
+  border-radius: 999px;
+  padding: 7px 10px;
+  color: var(--muted);
+  font-size: .85rem;
+  white-space: nowrap;
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+}
+.grid-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+.grid-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+.grid-4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+
+.card {
+  border: 1px solid var(--line);
+  background: linear-gradient(145deg, var(--card), var(--card-2));
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  overflow: hidden;
+}
+
+.card h2, .card h3 {
+  margin: 0 0 10px;
+  letter-spacing: -.045em;
+}
+.card p { color: var(--muted); line-height: 1.55; }
+
+.kpi {
+  min-height: 135px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.kpi .label { color: var(--muted); font-weight: 720; font-size: .9rem; }
+.kpi .value { font-size: clamp(1.8rem, 3.2vw, 2.8rem); font-weight: 900; letter-spacing: -.07em; }
+.kpi .sub { color: var(--soft); font-size: .86rem; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 999px;
+  padding: 5px 9px;
+  font-size: .78rem;
+  font-weight: 850;
+  border: 1px solid var(--line);
+  white-space: nowrap;
+}
+.badge.Keep, .badge.OK, .badge.Active { color: var(--green); background: rgba(94,234,212,.10); border-color: rgba(94,234,212,.25); }
+.badge.Restock, .badge.Watch, .badge.RaisePrice { color: var(--yellow); background: rgba(250,204,21,.10); border-color: rgba(250,204,21,.25); }
+.badge.Stop, .badge.OrderNow, .badge.Cancelled { color: var(--red); background: rgba(251,113,133,.10); border-color: rgba(251,113,133,.25); }
+.badge.TestMore, .badge.PastDue { color: var(--blue); background: rgba(147,197,253,.10); border-color: rgba(147,197,253,.25); }
+.badge.Full { color: var(--brand-2); background: rgba(198,156,109,.12); border-color: rgba(198,156,109,.35); }
+
+.table-wrap {
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+th, td {
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: middle;
+  font-size: .92rem;
+}
+th {
+  color: var(--soft);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  font-size: .73rem;
+  background: rgba(255,255,255,.055);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+td { color: var(--muted); }
+tr:hover td { background: rgba(255,255,255,.035); }
+td strong { color: var(--text); }
+
+.inline-input {
+  width: 96px;
+  min-width: 78px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 8px;
+}
+.inline-input.wide { width: 170px; }
+.inline-input.xwide { width: 230px; }
+
+.action-strip {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.search {
+  min-width: min(100%, 360px);
+}
+
+.progress-list {
+  display: grid;
+  gap: 14px;
+}
+.progress-item {
+  display: grid;
+  grid-template-columns: minmax(130px, .8fr) minmax(0, 2fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+.progress-track {
+  height: 11px;
+  border-radius: 99px;
+  overflow: hidden;
+  background: rgba(255,255,255,.09);
+}
+.progress-bar {
+  height: 100%;
+  width: var(--w, 0%);
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--brand), var(--brand-2));
+}
+.progress-item span { color: var(--muted); font-size: .9rem; }
+.progress-item strong { font-size: .88rem; }
+
+.insight {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 15px;
+  background: rgba(255,255,255,.055);
+}
+.insight-title { display: flex; gap: 8px; align-items: center; font-weight: 850; margin-bottom: 6px; }
+.insight p { margin: 0; color: var(--muted); font-size: .93rem; }
+
+.report-box {
+  border: 1px solid rgba(198,156,109,.32);
+  border-radius: 22px;
+  padding: 18px;
+  background: linear-gradient(135deg, rgba(198,156,109,.15), rgba(255,255,255,.045));
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.toast {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 50;
+  max-width: 380px;
+  border: 1px solid var(--line);
+  background: var(--panel-strong);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  padding: 13px 15px;
+  border-radius: 17px;
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+.empty {
+  text-align: center;
+  padding: 38px 20px;
+  color: var(--muted);
+}
+
+.hr { height: 1px; background: var(--line); margin: 18px 0; }
+.muted { color: var(--muted); }
+.soft { color: var(--soft); }
+.nowrap { white-space: nowrap; }
+.right { text-align: right; }
+.hidden { display: none !important; }
+.mt { margin-top: 16px; }
+.mb { margin-bottom: 16px; }
+
+@media (max-width: 1100px) {
+  .grid-4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .grid-3 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+
+@media (max-width: 860px) {
+  .auth-card { grid-template-columns: 1fr; }
+  .auth-hero h1 { margin-top: 34px; }
+  .auth-list { grid-template-columns: 1fr; }
+  .app-shell { grid-template-columns: 1fr; }
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(86vw, 330px);
+    z-index: 30;
+    transform: translateX(-105%);
+    transition: transform .22s ease;
+  }
+  body.sidebar-open .sidebar { transform: translateX(0); }
+  .main { padding: 18px; }
+  .mobile-menu { display: inline-flex; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .topbar { align-items: flex-start; }
+  .topbar .btn-row { justify-content: flex-end; }
+  .progress-item { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .auth-shell { padding: 12px; }
+  .auth-hero, .auth-form { padding: 26px; }
+  .topbar { flex-direction: column; }
+  .btn-row { width: 100%; }
+  .btn-row .btn { flex: 1; }
+}
+
+  </style>
+</head>
+<body>
+  <noscript>This app needs JavaScript enabled.</noscript>
+  <div id="app"></div>
+  <script>
+
+(() => {
+  "use strict";
+
+  const DEFAULT_PRODUCTS = [
+  {
+    "id": "SKU-001",
+    "sku": "SKU-001",
+    "name": "Lavender Soy Candle",
+    "category": "Candle",
+    "variant": "8oz",
+    "sellingPrice": 24.0,
+    "materialCost": 5.1,
+    "packagingCost": 1.2,
+    "shippingCost": 3.5,
+    "laborMinutes": 28.0,
+    "currentStock": 18.0,
+    "leadTimeDays": 10.0,
+    "serviceLevelZ": 1.65,
+    "demandStdDevDay": 1.2,
+    "returnRate": 0.03,
+    "adSpendUnit": 1.1,
+    "targetHourlyWage": 15.0,
+    "notes": "Hero product"
+  },
+  {
+    "id": "SKU-002",
+    "sku": "SKU-002",
+    "name": "Vanilla Soap Bar",
+    "category": "Soap",
+    "variant": "Single",
+    "sellingPrice": 12.0,
+    "materialCost": 2.4,
+    "packagingCost": 0.7,
+    "shippingCost": 2.3,
+    "laborMinutes": 18.0,
+    "currentStock": 7.0,
+    "leadTimeDays": 7.0,
+    "serviceLevelZ": 1.65,
+    "demandStdDevDay": 0.8,
+    "returnRate": 0.02,
+    "adSpendUnit": 0.6,
+    "targetHourlyWage": 15.0,
+    "notes": "Popular gift"
+  },
+  {
+    "id": "SKU-003",
+    "sku": "SKU-003",
+    "name": "Rose Bath Bomb Set",
+    "category": "Cosmetics",
+    "variant": "Pack of 4",
+    "sellingPrice": 19.0,
+    "materialCost": 6.8,
+    "packagingCost": 1.1,
+    "shippingCost": 3.2,
+    "laborMinutes": 55.0,
+    "currentStock": 4.0,
+    "leadTimeDays": 14.0,
+    "serviceLevelZ": 1.65,
+    "demandStdDevDay": 1.5,
+    "returnRate": 0.08,
+    "adSpendUnit": 1.2,
+    "targetHourlyWage": 15.0,
+    "notes": "Labor heavy"
+  },
+  {
+    "id": "SKU-004",
+    "sku": "SKU-004",
+    "name": "Personalized Name Bracelet",
+    "category": "Jewelry",
+    "variant": "Custom",
+    "sellingPrice": 32.0,
+    "materialCost": 8.5,
+    "packagingCost": 1.6,
+    "shippingCost": 4.0,
+    "laborMinutes": 75.0,
+    "currentStock": 11.0,
+    "leadTimeDays": 12.0,
+    "serviceLevelZ": 1.65,
+    "demandStdDevDay": 0.7,
+    "returnRate": 0.05,
+    "adSpendUnit": 1.5,
+    "targetHourlyWage": 15.0,
+    "notes": "Custom item"
+  },
+  {
+    "id": "SKU-005",
+    "sku": "SKU-005",
+    "name": "Citrus Wax Melt",
+    "category": "Candle",
+    "variant": "Pack",
+    "sellingPrice": 14.0,
+    "materialCost": 3.7,
+    "packagingCost": 0.85,
+    "shippingCost": 2.8,
+    "laborMinutes": 16.0,
+    "currentStock": 32.0,
+    "leadTimeDays": 8.0,
+    "serviceLevelZ": 1.65,
+    "demandStdDevDay": 1.4,
+    "returnRate": 0.01,
+    "adSpendUnit": 0.7,
+    "targetHourlyWage": 15.0,
+    "notes": "Fast make"
+  },
+  {
+    "id": "SKU-006",
+    "sku": "SKU-006",
+    "name": "Goat Milk Soap Set",
+    "category": "Soap",
+    "variant": "3-pack",
+    "sellingPrice": 28.0,
+    "materialCost": 7.2,
+    "packagingCost": 1.3,
+    "shippingCost": 3.6,
+    "laborMinutes": 35.0,
+    "currentStock": 9.0,
+    "leadTimeDays": 9.0,
+    "serviceLevelZ": 1.65,
+    "demandStdDevDay": 1.1,
+    "returnRate": 0.04,
+    "adSpendUnit": 1.0,
+    "targetHourlyWage": 15.0,
+    "notes": "Bundle"
+  },
+  {
+    "id": "SKU-007",
+    "sku": "SKU-007",
+    "name": "Birthday Gift Box",
+    "category": "Gift",
+    "variant": "Standard",
+    "sellingPrice": 42.0,
+    "materialCost": 16.0,
+    "packagingCost": 2.5,
+    "shippingCost": 6.0,
+    "laborMinutes": 80.0,
+    "currentStock": 6.0,
+    "leadTimeDays": 15.0,
+    "serviceLevelZ": 1.65,
+    "demandStdDevDay": 0.9,
+    "returnRate": 0.07,
+    "adSpendUnit": 2.3,
+    "targetHourlyWage": 15.0,
+    "notes": "Bundle/high AOV"
+  },
+  {
+    "id": "SKU-008",
+    "sku": "SKU-008",
+    "name": "Minimalist Earrings",
+    "category": "Jewelry",
+    "variant": "Silver",
+    "sellingPrice": 26.0,
+    "materialCost": 4.9,
+    "packagingCost": 1.1,
+    "shippingCost": 3.2,
+    "laborMinutes": 22.0,
+    "currentStock": 24.0,
+    "leadTimeDays": 10.0,
+    "serviceLevelZ": 1.65,
+    "demandStdDevDay": 1.3,
+    "returnRate": 0.02,
+    "adSpendUnit": 0.9,
+    "targetHourlyWage": 15.0,
+    "notes": "Good margin"
+  },
+  {
+    "id": "SKU-009",
+    "sku": "SKU-009",
+    "name": "Coffee Scrub Jar",
+    "category": "Cosmetics",
+    "variant": "100ml",
+    "sellingPrice": 18.0,
+    "materialCost": 4.3,
+    "packagingCost": 1.0,
+    "shippingCost": 3.1,
+    "laborMinutes": 24.0,
+    "currentStock": 15.0,
+    "leadTimeDays": 8.0,
+    "serviceLevelZ": 1.65,
+    "demandStdDevDay": 0.9,
+    "returnRate": 0.03,
+    "adSpendUnit": 0.8,
+    "targetHourlyWage": 15.0,
+    "notes": "Repeat purchase"
+  },
+  {
+    "id": "SKU-010",
+    "sku": "SKU-010",
+    "name": "Wedding Favor Soap",
+    "category": "Soap",
+    "variant": "Bulk",
+    "sellingPrice": 55.0,
+    "materialCost": 18.0,
+    "packagingCost": 3.5,
+    "shippingCost": 8.0,
+    "laborMinutes": 95.0,
+    "currentStock": 3.0,
+    "leadTimeDays": 20.0,
+    "serviceLevelZ": 1.65,
+    "demandStdDevDay": 0.6,
+    "returnRate": 0.04,
+    "adSpendUnit": 2.0,
+    "targetHourlyWage": 15.0,
+    "notes": "Bulk order"
+  },
+  {
+    "id": "SKU-011",
+    "sku": "SKU-011",
+    "name": "Autumn Spice Candle",
+    "category": "Candle",
+    "variant": "Seasonal",
+    "sellingPrice": 27.0,
+    "materialCost": 6.2,
+    "packagingCost": 1.3,
+    "shippingCost": 3.7,
+    "laborMinutes": 32.0,
+    "currentStock": 13.0,
+    "leadTimeDays": 12.0,
+    "serviceLevelZ": 1.65,
+    "demandStdDevDay": 1.7,
+    "returnRate": 0.02,
+    "adSpendUnit": 1.1,
+    "targetHourlyWage": 15.0,
+    "notes": "Seasonal"
+  },
+  {
+    "id": "SKU-012",
+    "sku": "SKU-012",
+    "name": "Custom Pet Portrait Ornament",
+    "category": "Gift",
+    "variant": "Custom",
+    "sellingPrice": 38.0,
+    "materialCost": 9.0,
+    "packagingCost": 1.4,
+    "shippingCost": 4.5,
+    "laborMinutes": 120.0,
+    "currentStock": 2.0,
+    "leadTimeDays": 12.0,
+    "serviceLevelZ": 1.65,
+    "demandStdDevDay": 0.4,
+    "returnRate": 0.06,
+    "adSpendUnit": 1.8,
+    "targetHourlyWage": 15.0,
+    "notes": "Very labor heavy"
+  }
+];
+  const DEFAULT_SALES = [
+  {
+    "date": "2026-05-20",
+    "sku": "SKU-001",
+    "unitsSold": 46,
+    "revenue": 1104,
+    "refunds": 0,
+    "adSpend": 51.48,
+    "channel": "Etsy",
+    "notes": "Sample 30D aggregate"
+  },
+  {
+    "date": "2026-05-21",
+    "sku": "SKU-002",
+    "unitsSold": 11,
+    "revenue": 132,
+    "refunds": 0,
+    "adSpend": 8.77,
+    "channel": "Etsy",
+    "notes": "Sample 30D aggregate"
+  },
+  {
+    "date": "2026-05-22",
+    "sku": "SKU-003",
+    "unitsSold": 36,
+    "revenue": 684,
+    "refunds": 0,
+    "adSpend": 11.84,
+    "channel": "Etsy",
+    "notes": "Sample 30D aggregate"
+  },
+  {
+    "date": "2026-05-23",
+    "sku": "SKU-004",
+    "unitsSold": 17,
+    "revenue": 544,
+    "refunds": 0,
+    "adSpend": 12.78,
+    "channel": "Etsy",
+    "notes": "Sample 30D aggregate"
+  },
+  {
+    "date": "2026-05-24",
+    "sku": "SKU-005",
+    "unitsSold": 70,
+    "revenue": 980,
+    "refunds": 0,
+    "adSpend": 80.22,
+    "channel": "Etsy",
+    "notes": "Sample 30D aggregate"
+  },
+  {
+    "date": "2026-05-25",
+    "sku": "SKU-006",
+    "unitsSold": 12,
+    "revenue": 336,
+    "refunds": 0,
+    "adSpend": 6.14,
+    "channel": "Etsy",
+    "notes": "Sample 30D aggregate"
+  },
+  {
+    "date": "2026-05-19",
+    "sku": "SKU-007",
+    "unitsSold": 53,
+    "revenue": 2226,
+    "refunds": 0,
+    "adSpend": 0,
+    "channel": "Etsy",
+    "notes": "Sample 30D aggregate"
+  },
+  {
+    "date": "2026-05-20",
+    "sku": "SKU-008",
+    "unitsSold": 45,
+    "revenue": 1170,
+    "refunds": 0,
+    "adSpend": 37.45,
+    "channel": "Etsy",
+    "notes": "Sample 30D aggregate"
+  },
+  {
+    "date": "2026-05-21",
+    "sku": "SKU-009",
+    "unitsSold": 59,
+    "revenue": 1062,
+    "refunds": 0,
+    "adSpend": 35.95,
+    "channel": "Etsy",
+    "notes": "Sample 30D aggregate"
+  },
+  {
+    "date": "2026-05-22",
+    "sku": "SKU-010",
+    "unitsSold": 60,
+    "revenue": 3300,
+    "refunds": 0,
+    "adSpend": 42.59,
+    "channel": "Etsy",
+    "notes": "Sample 30D aggregate"
+  },
+  {
+    "date": "2026-05-23",
+    "sku": "SKU-011",
+    "unitsSold": 19,
+    "revenue": 513,
+    "refunds": 0,
+    "adSpend": 13.72,
+    "channel": "Etsy",
+    "notes": "Sample 30D aggregate"
+  },
+  {
+    "date": "2026-05-24",
+    "sku": "SKU-012",
+    "unitsSold": 28,
+    "revenue": 1064,
+    "refunds": 0,
+    "adSpend": 18.53,
+    "channel": "Etsy",
+    "notes": "Sample 30D aggregate"
+  }
+];
+  const DEFAULT_SETTINGS = {
+  "currency": "USD",
+  "listingFee": 0.2,
+  "transactionFee": 0.065,
+  "paymentRate": 0.03,
+  "paymentFixedFee": 0.25,
+  "minProfitHour": 15,
+  "minNetMargin": 0.2,
+  "defaultServiceZ": 1.65,
+  "lowSalesThreshold": 3,
+  "highReturnThreshold": 0.15,
+  "productCapacity": 100,
+  "defaultPriceIncrease": 0.1
+};
+  const UPGRADE_URL = "/.netlify/functions/create-checkout";
+  const FREE_PRODUCT_LIMIT = 3;
+
+  const NAV = [
+    ["dashboard", "Dashboard", "KPI + action overview"],
+    ["products", "Product Input", "SKU and cost data"],
+    ["sales", "Sales Input", "Orders, revenue and ads"],
+    ["analysis", "Product Analysis", "Profit decision engine"],
+    ["reorder", "Reorder Planner", "Safety stock + order qty"],
+    ["pricing", "Pricing Simulator", "Test price increases"],
+    ["variants", "Variant Comparison", "Category/SKU ranking"],
+    ["weekly", "Weekly Report", "Action checklist"],
+    ["settings", "Settings", "Model assumptions"],
+    ["member", "Member Access", "Plan, license, support"]
+  ];
+
+  const STORAGE_KEY = "mavenorysystems_saas_webapp_v1";
+
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+  const clean = (v) => String(v ?? "").replace(/[&<>"']/g, (m) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+  }[m]));
+
+  const num = (v, fallback = 0) => {
+    const n = Number(String(v ?? "").replace(",", "."));
+    return Number.isFinite(n) ? n : fallback;
+  };
+
+  const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+  const sum = (arr, key) => arr.reduce((a, x) => a + num(typeof key === "function" ? key(x) : x[key]), 0);
+  const avg = (arr, key) => arr.length ? sum(arr, key) / arr.length : 0;
+
+  const currencySymbol = (currency) => ({ USD: "$", EUR: "€", GBP: "£", TRY: "₺" }[currency] || `${currency} `);
+  const money = (v) => `${currencySymbol(state.settings.currency)}${num(v).toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+  const money2 = (v) => `${currencySymbol(state.settings.currency)}${num(v).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const pct = (v) => `${(num(v) * 100).toFixed(1)}%`;
+  const nice = (v, d = 1) => num(v).toLocaleString(undefined, { maximumFractionDigits: d });
+  const todayIso = () => new Date().toISOString().slice(0, 10);
+
+  const defaultState = () => ({
+    user: null,
+    workspace: {
+      name: "Mavenory Systems Workspace",
+      plan: "Free Starter",
+      subscriptionStatus: "Active",
+      licenseKey: "FREE-MAVENORY-SYSTEMS"
+    },
+    products: structuredClone(DEFAULT_PRODUCTS),
+    sales: structuredClone(DEFAULT_SALES),
+    settings: structuredClone(DEFAULT_SETTINGS),
+    priceChanges: {},
+    ui: {
+      view: "dashboard",
+      theme: "dark",
+      productSearch: "",
+      salesSearch: "",
+      analysisSearch: ""
+    }
+  });
+
+  let state = loadState();
+
+  function structuredCloneSafe(obj) {
+    return JSON.parse(JSON.stringify(obj));
+  }
+
+  function structuredClone(obj) {
+    if (window.structuredClone) return window.structuredClone(obj);
+    return structuredCloneSafe(obj);
+  }
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return defaultState();
+      const parsed = JSON.parse(raw);
+      const base = defaultState();
+      return {
+        ...base,
+        ...parsed,
+        workspace: { ...base.workspace, ...(parsed.workspace || {}) },
+        settings: { ...base.settings, ...(parsed.settings || {}) },
+        ui: { ...base.ui, ...(parsed.ui || {}) },
+        products: Array.isArray(parsed.products) ? parsed.products : base.products,
+        sales: Array.isArray(parsed.sales) ? parsed.sales : base.sales,
+        priceChanges: parsed.priceChanges || {}
+      };
+    } catch (e) {
+      console.warn(e);
+      return defaultState();
+    }
+  }
+
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function setTheme() {
+    document.documentElement.dataset.theme = state.ui.theme || "dark";
+  }
+
+  function toast(message) {
+    let el = $(".toast");
+    if (!el) {
+      el = document.createElement("div");
+      el.className = "toast";
+      document.body.appendChild(el);
+    }
+    el.textContent = message;
+    el.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => el.classList.remove("show"), 2600);
+  }
+
+  function salesForSku(sku) {
+    return state.sales.filter((s) => String(s.sku).trim() === String(sku).trim());
+  }
+
+  function aggregateSales(sku) {
+    const rows = salesForSku(sku);
+    return {
+      units: sum(rows, "unitsSold"),
+      revenue: sum(rows, "revenue"),
+      refunds: sum(rows, "refunds"),
+      adSpend: sum(rows, "adSpend")
+    };
+  }
+
+  function feePerUnit(price, settings = state.settings) {
+    return num(settings.listingFee) + price * num(settings.transactionFee) + price * num(settings.paymentRate) + num(settings.paymentFixedFee);
+  }
+
+  function variableCost(product) {
+    return num(product.materialCost) + num(product.packagingCost) + num(product.shippingCost);
+  }
+
+  function reorderTrigger(product, avgDailySales) {
+    const z = num(product.serviceLevelZ) > 0 ? num(product.serviceLevelZ) : num(state.settings.defaultServiceZ);
+    const lt = Math.max(0, num(product.leadTimeDays));
+    return avgDailySales * lt + z * num(product.demandStdDevDay) * Math.sqrt(lt);
+  }
+
+  function calculateAnalysis() {
+    return state.products.map((p, index) => {
+      const s = aggregateSales(p.sku);
+      const units = s.units;
+      const price = num(p.sellingPrice);
+      const revenue = s.revenue > 0 ? s.revenue : price * units;
+      const fee = feePerUnit(price);
+      const cost = variableCost(p);
+      const fallbackRefunds = num(p.returnRate) * revenue;
+      const actualRefunds = s.refunds > 0 ? s.refunds : fallbackRefunds;
+      const ad = s.adSpend > 0 ? s.adSpend : num(p.adSpendUnit) * units;
+      const netProfitTotal = revenue - (fee * units) - (cost * units) - ad - actualRefunds;
+      const netProfitUnit = units > 0 ? netProfitTotal / units : 0;
+      const margin = revenue > 0 ? netProfitTotal / revenue : 0;
+      const laborHours = (num(p.laborMinutes) * units) / 60;
+      const profitHour = laborHours > 0 ? netProfitTotal / laborHours : 0;
+      const avgDailySales = units / 30;
+      const trigger = reorderTrigger(p, avgDailySales);
+
+      let decision = "Keep";
+      if (units < num(state.settings.lowSalesThreshold)) decision = "Test More";
+      else if (num(p.returnRate) > num(state.settings.highReturnThreshold)) decision = "Test More";
+      else if (profitHour < num(state.settings.minProfitHour)) {
+        decision = margin < num(state.settings.minNetMargin) ? "Raise Price" : "Stop";
+      } else if (num(p.currentStock) <= trigger) {
+        decision = "Restock";
+      } else if (margin < num(state.settings.minNetMargin)) {
+        decision = "Raise Price";
+      }
+
+      const noteMap = {
+        Keep: "Healthy product. Monitor stock and margin weekly.",
+        "Raise Price": "Profit/hour or margin is below target. Test a price increase.",
+        Stop: "Labor or economics are weak. Consider discontinuing.",
+        Restock: "Demand and stock level indicate reorder should be reviewed.",
+        "Test More": "Sales/returns need more evidence before deciding."
+      };
+
+      const basePriority = { Stop: 500, "Raise Price": 400, Restock: 300, "Test More": 200, Keep: 0 }[decision] || 100;
+      const priorityScore = decision === "Keep" ? 0 :
+        basePriority
+        + Math.max(0, num(state.settings.minProfitHour) - profitHour) * 5
+        + Math.max(0, trigger - num(p.currentStock))
+        + units / 1000
+        + (index + 1) / 100000;
+
+      return {
+        ...p,
+        unitsSold: units,
+        avgDailySales,
+        feesUnit: fee,
+        variableCostUnit: cost,
+        netProfitUnit,
+        netMargin: margin,
+        revenue,
+        netProfitTotal,
+        profitHour,
+        currentStock: num(p.currentStock),
+        returnRate: num(p.returnRate),
+        decision,
+        decisionNote: noteMap[decision],
+        priorityScore
+      };
+    });
+  }
+
+  function calculateReorder(analysis = calculateAnalysis()) {
+    return analysis.map((a) => {
+      const leadTime = num(a.leadTimeDays);
+      const z = num(a.serviceLevelZ) > 0 ? num(a.serviceLevelZ) : num(state.settings.defaultServiceZ);
+      const safetyStock = z * num(a.demandStdDevDay) * Math.sqrt(Math.max(0, leadTime));
+      const reorderPoint = a.avgDailySales * leadTime + safetyStock;
+      const daysUntilStockout = a.avgDailySales > 0 ? a.currentStock / a.avgDailySales : null;
+      const suggestedOrderQty = Math.max(0, Math.ceil(reorderPoint * 2 - a.currentStock));
+      const action = a.currentStock <= reorderPoint ? "Order Now" : (a.currentStock <= reorderPoint * 1.25 ? "Watch" : "OK");
+      return { ...a, safetyStock, reorderPoint, daysUntilStockout, suggestedOrderQty, action };
+    });
+  }
+
+  function calculatePricing(analysis = calculateAnalysis()) {
+    return analysis.map((a) => {
+      const change = state.priceChanges[a.sku] ?? num(state.settings.defaultPriceIncrease);
+      const newPrice = num(a.sellingPrice) * (1 + num(change));
+      const newFees = feePerUnit(newPrice);
+      const newNetProfitUnit = newPrice - newFees - (num(a.materialCost) + num(a.packagingCost) + num(a.shippingCost) + num(a.adSpendUnit) + num(a.returnRate) * newPrice);
+      const newProfitHour = num(a.laborMinutes) > 0 ? newNetProfitUnit / (num(a.laborMinutes) / 60) : 0;
+      const newMargin = newPrice > 0 ? newNetProfitUnit / newPrice : 0;
+      let recommendation = "Increase more or reduce costs";
+      if (newProfitHour >= num(state.settings.minProfitHour) && newMargin >= num(state.settings.minNetMargin)) recommendation = "Price test looks healthy";
+      else if (newMargin < num(state.settings.minNetMargin)) recommendation = "Margin still weak";
+      const notes = newProfitHour > a.profitHour ? "Improves profit/hour" : "Does not improve enough";
+      return { ...a, priceChange: change, newPrice, newNetProfitUnit, newProfitHour, newMargin, recommendation, notes };
+    });
+  }
+
+  function getSummary() {
+    const analysis = calculateAnalysis();
+    const reorder = calculateReorder(analysis);
+    const productsCount = state.products.length;
+    const totalUnits = sum(analysis, "unitsSold");
+    const revenue = sum(analysis, "revenue");
+    const netProfit = sum(analysis, "netProfitTotal");
+    const profitHourAvg = avg(analysis.filter(x => x.profitHour > 0), "profitHour");
+    const underTarget = analysis.filter((x) => x.profitHour > 0 && x.profitHour < num(state.settings.minProfitHour)).length;
+    const actionCounts = countBy(analysis, "decision");
+    const reorderCounts = countBy(reorder, "action");
+    return { analysis, reorder, productsCount, totalUnits, revenue, netProfit, profitHourAvg, underTarget, actionCounts, reorderCounts };
+  }
+
+  function countBy(arr, key) {
+    return arr.reduce((acc, x) => {
+      const k = typeof key === "function" ? key(x) : x[key];
+      acc[k] = (acc[k] || 0) + 1;
+      return acc;
+    }, {});
+  }
+
+  function groupBy(arr, key) {
+    return arr.reduce((acc, x) => {
+      const k = typeof key === "function" ? key(x) : x[key];
+      (acc[k] ||= []).push(x);
+      return acc;
+    }, {});
+  }
+
+  function badge(text) {
+    const cls = String(text).replace(/\s+/g, "");
+    return `<span class="badge ${cls}">${clean(text)}</span>`;
+  }
+
+  function renderAuth() {
+    return `
+      <div class="auth-shell">
+        <div class="auth-card">
+          <section class="auth-hero">
+            <div class="logo"><span class="logo-mark">M</span><span>Mavenory Systems Profit Planner</span></div>
+            <h1>Run your handmade shop by profit, not guesswork.</h1>
+            <p>This is the SaaS version of the spreadsheet: product profitability, labor-hour economics, reorder planning, pricing tests and weekly action reports in one web app.</p>
+            <div class="auth-list">
+              <div>✓ Product-level net profit engine</div>
+              <div>✓ Reorder point + safety stock</div>
+              <div>✓ Pricing simulator</div>
+              <div>✓ Weekly decision checklist</div>
+            </div>
+          </section>
+          <section class="auth-form">
+            <h2>Open your workspace</h2>
+            <p>For this MVP, data is saved in your browser. The structure is ready to connect to Supabase/Auth and Lemon Squeezy subscriptions.</p>
+            <form id="loginForm" class="form-grid">
+              <div class="field">
+                <label>Email</label>
+                <input class="input" name="email" type="email" placeholder="seller@example.com" required value="demo@mavenory.com" />
+              </div>
+              <div class="field">
+                <label>Workspace name</label>
+                <input class="input" name="workspace" type="text" placeholder="My Etsy Shop" value="Mavenory Systems Workspace" />
+              </div>
+              <div class="field">
+                <label>License key</label>
+                <input class="input" name="license" type="text" placeholder="License key" value="FREE-MAVENORY-SYSTEMS" />
+              </div>
+              <button class="btn btn-primary" type="submit">Enter Web App</button>
+              <button class="btn" type="button" data-action="resetSampleBeforeLogin">Reset sample data</button>
+            </form>
+          </section>
+        </div>
+      </div>
+    `;
+  }
+
+  function pageTitle() {
+    const meta = {
+      dashboard: ["Dashboard", "Shop-level KPIs, action counts and weekly priorities."],
+      products: ["Product Input", "Manage SKUs, costs, labor, stock, lead time and return assumptions."],
+      sales: ["Sales Input", "Add orders manually or paste CSV rows from Etsy/Amazon/Shopify exports."],
+      analysis: ["Product Analysis", "The decision engine behind Keep, Restock, Raise Price, Stop and Test More."],
+      reorder: ["Reorder Planner", "Safety stock, reorder point, days until stockout and suggested order quantity."],
+      pricing: ["Pricing Simulator", "Test price increases before changing listings."],
+      variants: ["Variant Comparison", "Compare categories, variants and SKUs by profit/hour and 30-day profit."],
+      weekly: ["Weekly Report", "Seller-ready summary and prioritized operating checklist."],
+      settings: ["Settings", "Marketplace fees, target profit/hour, service level and alert thresholds."],
+      member: ["Member Access", "Subscription state, license, portal links and product access controls."]
+    }[state.ui.view] || ["Mavenory Systems", "Operations planner"];
+    return `
+      <div class="page-title">
+        <h1>${meta[0]}</h1>
+        <p>${meta[1]}</p>
+      </div>
+    `;
+  }
+
+  function renderLayout() {
+    return `
+      <div class="app-shell">
+        ${renderSidebar()}
+        <main class="main">
+          <div class="topbar">
+            <button class="btn mobile-menu" data-action="toggleSidebar">☰</button>
+            ${pageTitle()}
+            <div class="btn-row">
+              <span class="pill">${badge(state.workspace.plan || "Demo")} ${clean(state.workspace.subscriptionStatus || "Active")}</span>
+              <button class="btn btn-small" data-action="themeToggle">${state.ui.theme === "light" ? "Dark" : "Light"} mode</button>
+              <button class="btn btn-small" data-action="downloadJson">Backup</button>
+            </div>
+          </div>
+          ${renderView()}
+        </main>
+      </div>
+      <div class="toast"></div>
+    `;
+  }
+
+  function renderSidebar() {
+    return `
+      <aside class="sidebar">
+        <div class="logo"><span class="logo-mark">M</span><span>Mavenory Systems</span></div>
+        <div class="workspace-card">
+          <span>Workspace</span>
+          <strong>${clean(state.workspace.name)}</strong>
+          <span>${clean(state.user?.email || "No user")}</span>
+        </div>
+        <nav class="nav">
+          ${NAV.map(([id, title, sub]) => `
+            <button data-nav="${id}" class="${state.ui.view === id ? "active" : ""}">
+              ${title}<small>${sub}</small>
+            </button>
+          `).join("")}
+        </nav>
+        <div class="sidebar-footer">
+          <button class="btn btn-small btn-ghost" data-action="logout">Log out</button>
+          <p>Static SaaS MVP. Data is stored locally until a real backend is connected.</p>
+        </div>
+      </aside>
+    `;
+  }
+
+  function renderView() {
+    switch (state.ui.view) {
+      case "products": return renderProducts();
+      case "sales": return renderSales();
+      case "analysis": return renderAnalysis();
+      case "reorder": return renderReorder();
+      case "pricing": return renderPricing();
+      case "variants": return renderVariants();
+      case "weekly": return renderWeekly();
+      case "settings": return renderSettings();
+      case "member": return renderMember();
+      default: return renderDashboard();
+    }
+  }
+
+  function renderDashboard() {
+    const s = getSummary();
+    const analysis = s.analysis;
+    const topPriority = [...analysis].sort((a,b) => b.priorityScore - a.priorityScore).filter(x => x.priorityScore > 0).slice(0, 5);
+    const topProfit = [...analysis].sort((a,b) => b.profitHour - a.profitHour).slice(0, 5);
+    const categoryRows = Object.entries(groupBy(analysis, "category")).map(([category, rows]) => ({
+      category,
+      revenue: sum(rows, "revenue"),
+      netProfit: sum(rows, "netProfitTotal"),
+      profitHour: avg(rows.filter(x=>x.profitHour>0), "profitHour")
+    })).sort((a,b)=>b.netProfit-a.netProfit);
+    const maxCategoryProfit = Math.max(1, ...categoryRows.map(x => x.netProfit));
+    const actions = ["Keep", "Raise Price", "Restock", "Stop", "Test More"];
+    const maxAction = Math.max(1, ...actions.map(k => s.actionCounts[k] || 0));
+    return `
+      <section class="grid grid-4 mb">
+        ${kpi("Active SKUs", s.productsCount, "Products in the operating model")}
+        ${kpi("30D Revenue", money(s.revenue), `${nice(s.totalUnits, 0)} units sold`)}
+        ${kpi("Net Profit", money(s.netProfit), `${pct(s.revenue ? s.netProfit / s.revenue : 0)} blended margin`)}
+        ${kpi("Avg Profit / Hour", money2(s.profitHourAvg), `${s.underTarget} products below target`)}
+      </section>
+
+      <section class="grid grid-2 mb">
+        <div class="card">
+          <h2>Decision mix</h2>
+          <p>How many products require action based on profit/hour, margin, stock and demand.</p>
+          <div class="progress-list mt">
+            ${actions.map(k => progressRow(k, s.actionCounts[k] || 0, maxAction, badge(k))).join("")}
+          </div>
+        </div>
+        <div class="card">
+          <h2>Category profit map</h2>
+          <p>Which categories are creating the most 30-day net profit.</p>
+          <div class="progress-list mt">
+            ${categoryRows.map(x => progressRow(x.category, x.netProfit, maxCategoryProfit, money(x.netProfit))).join("")}
+          </div>
+        </div>
+      </section>
+
+      <section class="grid grid-2">
+        <div class="card">
+          <h2>Top weekly priorities</h2>
+          <div class="table-wrap">${table(["Action", "SKU", "Product", "Profit/hr", "Margin"], topPriority.map(r => [
+            badge(r.decision), clean(r.sku), `<strong>${clean(r.name)}</strong>`, money2(r.profitHour), pct(r.netMargin)
+          ]))}</div>
+        </div>
+        <div class="card">
+          <h2>Best profit/hour candidates</h2>
+          <div class="table-wrap">${table(["SKU", "Product", "Profit/hr", "Net Profit", "Decision"], topProfit.map(r => [
+            clean(r.sku), `<strong>${clean(r.name)}</strong>`, money2(r.profitHour), money(r.netProfitTotal), badge(r.decision)
+          ]))}</div>
+        </div>
+      </section>
+    `;
+  }
+
+  function kpi(label, value, sub) {
+    return `
+      <div class="card kpi">
+        <div class="label">${clean(label)}</div>
+        <div class="value">${value}</div>
+        <div class="sub">${clean(sub)}</div>
+      </div>
+    `;
+  }
+
+  function progressRow(label, value, max, display) {
+    const w = clamp((num(value) / Math.max(1, num(max))) * 100, 0, 100);
+    return `
+      <div class="progress-item">
+        <span>${clean(label)}</span>
+        <div class="progress-track"><div class="progress-bar" style="--w:${w}%"></div></div>
+        <strong>${display}</strong>
+      </div>
+    `;
+  }
+
+  function table(headers, rows, empty = "No rows yet.") {
+    if (!rows.length) return `<div class="empty">${empty}</div>`;
+    return `
+      <table>
+        <thead><tr>${headers.map(h => `<th>${clean(h)}</th>`).join("")}</tr></thead>
+        <tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c ?? ""}</td>`).join("")}</tr>`).join("")}</tbody>
+      </table>
+    `;
+  }
+
+  function renderProducts() {
+    const q = state.ui.productSearch.toLowerCase();
+    const rows = state.products
+      .map((p, index) => ({ p, index }))
+      .filter(({p}) => !q || [p.sku, p.name, p.category, p.variant].some(x => String(x).toLowerCase().includes(q)));
+    return `
+      <section class="card">
+        <div class="action-strip">
+          <div class="btn-row">
+            <button class="btn btn-primary" data-action="addProduct">Add product</button>
+            <button class="btn" data-action="exportProductsCsv">Export products CSV</button>
+          </div>
+          <input class="input search" data-ui="productSearch" placeholder="Search SKU, product, category..." value="${clean(state.ui.productSearch)}" />
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                ${["SKU","Product","Category","Variant","Price","Material","Packaging","Shipping","Labor Min","Stock","Lead Time","Z","Std Dev","Return","Ad/Unit","Target Wage","Notes",""].map(h=>`<th>${h}</th>`).join("")}
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(({p,index}) => `
+                <tr>
+                  ${productInput(index, "sku", p.sku, "wide")}
+                  ${productInput(index, "name", p.name, "xwide")}
+                  ${productInput(index, "category", p.category, "wide")}
+                  ${productInput(index, "variant", p.variant, "wide")}
+                  ${productInput(index, "sellingPrice", p.sellingPrice)}
+                  ${productInput(index, "materialCost", p.materialCost)}
+                  ${productInput(index, "packagingCost", p.packagingCost)}
+                  ${productInput(index, "shippingCost", p.shippingCost)}
+                  ${productInput(index, "laborMinutes", p.laborMinutes)}
+                  ${productInput(index, "currentStock", p.currentStock)}
+                  ${productInput(index, "leadTimeDays", p.leadTimeDays)}
+                  ${productInput(index, "serviceLevelZ", p.serviceLevelZ)}
+                  ${productInput(index, "demandStdDevDay", p.demandStdDevDay)}
+                  ${productInput(index, "returnRate", p.returnRate)}
+                  ${productInput(index, "adSpendUnit", p.adSpendUnit)}
+                  ${productInput(index, "targetHourlyWage", p.targetHourlyWage)}
+                  ${productInput(index, "notes", p.notes, "xwide")}
+                  <td><button class="btn btn-small btn-danger" data-action="deleteProduct" data-index="${index}">Delete</button></td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    `;
+  }
+
+  function productInput(index, field, value, width = "") {
+    const textFields = ["sku", "name", "category", "variant", "notes"];
+    const type = textFields.includes(field) ? "text" : "number";
+    const step = type === "number" ? ' step="0.01"' : "";
+    return `<td><input class="inline-input ${width}" data-product-index="${index}" data-field="${field}" type="${type}"${step} value="${clean(value)}" /></td>`;
+  }
+
+  function renderSales() {
+    const q = state.ui.salesSearch.toLowerCase();
+    const rows = state.sales
+      .map((s, index) => ({ s, index }))
+      .filter(({s}) => !q || [s.sku, s.channel, s.notes, s.date].some(x => String(x).toLowerCase().includes(q)));
+    return `
+      <section class="grid grid-2 mb">
+        <div class="card">
+          <h2>Add sales row</h2>
+          <div class="grid grid-2 mt">
+            <div class="field"><label>Date</label><input class="input" id="newSaleDate" type="date" value="${todayIso()}"></div>
+            <div class="field"><label>SKU</label><select class="select" id="newSaleSku">${state.products.map(p=>`<option>${clean(p.sku)}</option>`).join("")}</select></div>
+            <div class="field"><label>Units Sold</label><input class="input" id="newSaleUnits" type="number" step="1" value="1"></div>
+            <div class="field"><label>Revenue</label><input class="input" id="newSaleRevenue" type="number" step="0.01" value="0"></div>
+            <div class="field"><label>Refunds</label><input class="input" id="newSaleRefunds" type="number" step="0.01" value="0"></div>
+            <div class="field"><label>Ad Spend</label><input class="input" id="newSaleAd" type="number" step="0.01" value="0"></div>
+            <div class="field"><label>Channel</label><input class="input" id="newSaleChannel" value="Etsy"></div>
+            <div class="field"><label>Notes</label><input class="input" id="newSaleNotes" value=""></div>
+          </div>
+          <button class="btn btn-primary mt" data-action="addSale">Add sale</button>
+        </div>
+        <div class="card">
+          <h2>CSV import</h2>
+          <p>Paste CSV with headers: Date, SKU, Units Sold, Revenue, Refunds, Ad Spend, Channel, Notes.</p>
+          <textarea class="textarea" id="salesCsvPaste" placeholder="Date,SKU,Units Sold,Revenue,Refunds,Ad Spend,Channel,Notes"></textarea>
+          <div class="btn-row mt">
+            <button class="btn btn-primary" data-action="importSalesCsv">Import CSV</button>
+            <button class="btn" data-action="exportSalesCsv">Export sales CSV</button>
+          </div>
+        </div>
+      </section>
+      <section class="card">
+        <div class="action-strip">
+          <h2>Sales rows</h2>
+          <input class="input search" data-ui="salesSearch" placeholder="Search sales..." value="${clean(state.ui.salesSearch)}" />
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>${["Date","SKU","Units","Revenue","Refunds","Ad Spend","Channel","Notes",""].map(h=>`<th>${h}</th>`).join("")}</tr></thead>
+            <tbody>
+              ${rows.map(({s,index}) => `
+                <tr>
+                  ${saleInput(index,"date",s.date,"date")}
+                  ${saleInput(index,"sku",s.sku,"text")}
+                  ${saleInput(index,"unitsSold",s.unitsSold,"number")}
+                  ${saleInput(index,"revenue",s.revenue,"number")}
+                  ${saleInput(index,"refunds",s.refunds,"number")}
+                  ${saleInput(index,"adSpend",s.adSpend,"number")}
+                  ${saleInput(index,"channel",s.channel,"text")}
+                  ${saleInput(index,"notes",s.notes,"text","wide")}
+                  <td><button class="btn btn-small btn-danger" data-action="deleteSale" data-index="${index}">Delete</button></td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    `;
+  }
+
+  function saleInput(index, field, value, type = "text", width = "") {
+    const step = type === "number" ? ' step="0.01"' : "";
+    return `<td><input class="inline-input ${width}" data-sale-index="${index}" data-field="${field}" type="${type}"${step} value="${clean(value)}" /></td>`;
+  }
+
+  function renderAnalysis() {
+    const q = state.ui.analysisSearch.toLowerCase();
+    const rows = calculateAnalysis().filter(r => !q || [r.sku, r.name, r.category, r.decision].some(x => String(x).toLowerCase().includes(q)));
+    return `
+      <section class="card">
+        <div class="action-strip">
+          <div class="btn-row">
+            <button class="btn" data-action="exportAnalysisCsv">Export analysis CSV</button>
+          </div>
+          <input class="input search" data-ui="analysisSearch" placeholder="Search analysis..." value="${clean(state.ui.analysisSearch)}" />
+        </div>
+        <div class="table-wrap">
+          ${table(
+            ["SKU","Product","Category","Variant","Price","Units","Avg Daily","Fees/Unit","Cost/Unit","Net Profit/Unit","Margin","Revenue","Net Profit","Profit/Hour","Stock","Return","Decision","Decision Note"],
+            rows.map(r => [
+              clean(r.sku), `<strong>${clean(r.name)}</strong>`, clean(r.category), clean(r.variant), money2(r.sellingPrice),
+              nice(r.unitsSold,0), nice(r.avgDailySales,2), money2(r.feesUnit), money2(r.variableCostUnit), money2(r.netProfitUnit), pct(r.netMargin),
+              money(r.revenue), money(r.netProfitTotal), money2(r.profitHour), nice(r.currentStock,0), pct(r.returnRate), badge(r.decision), clean(r.decisionNote)
+            ])
+          )}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderReorder() {
+    const rows = calculateReorder();
+    return `
+      <section class="grid grid-3 mb">
+        <div class="insight"><div class="insight-title">Safety stock</div><p>Service Z × demand standard deviation × square root of lead time.</p></div>
+        <div class="insight"><div class="insight-title">Reorder point</div><p>Average daily sales × lead time + safety stock.</p></div>
+        <div class="insight"><div class="insight-title">Suggested order</div><p>Enough to rebuild stock to roughly two reorder points.</p></div>
+      </section>
+      <section class="card">
+        <div class="action-strip">
+          <h2>Reorder planner</h2>
+          <button class="btn" data-action="exportReorderCsv">Export reorder CSV</button>
+        </div>
+        <div class="table-wrap">
+          ${table(
+            ["SKU","Product","Avg Daily","Lead Time","Std Dev","Z","Safety Stock","Reorder Point","Stock","Days Left","Suggested Qty","Action"],
+            rows.map(r => [
+              clean(r.sku), `<strong>${clean(r.name)}</strong>`, nice(r.avgDailySales,2), nice(r.leadTimeDays,0), nice(r.demandStdDevDay,2),
+              nice(r.serviceLevelZ,2), nice(r.safetyStock,1), nice(r.reorderPoint,1), nice(r.currentStock,0),
+              r.daysUntilStockout === null ? "No sales" : nice(r.daysUntilStockout,1), nice(r.suggestedOrderQty,0), badge(r.action)
+            ])
+          )}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderPricing() {
+    const rows = calculatePricing();
+    return `
+      <section class="card mb">
+        <div class="grid grid-3">
+          <div class="field"><label>Global default price increase</label><input class="input" data-setting="defaultPriceIncrease" type="number" step="0.01" value="${clean(state.settings.defaultPriceIncrease)}"></div>
+          <div class="field"><label>Minimum profit/hour</label><input class="input" data-setting="minProfitHour" type="number" step="0.01" value="${clean(state.settings.minProfitHour)}"></div>
+          <div class="field"><label>Minimum net margin</label><input class="input" data-setting="minNetMargin" type="number" step="0.01" value="${clean(state.settings.minNetMargin)}"></div>
+        </div>
+      </section>
+      <section class="card">
+        <div class="action-strip">
+          <h2>Pricing simulator</h2>
+          <button class="btn" data-action="exportPricingCsv">Export pricing CSV</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>${["SKU","Product","Current Price","Change %","New Price","Current Profit/hr","New Profit/unit","New Profit/hr","New Margin","Recommendation","Notes"].map(h=>`<th>${h}</th>`).join("")}</tr></thead>
+            <tbody>
+              ${rows.map(r => `
+                <tr>
+                  <td>${clean(r.sku)}</td>
+                  <td><strong>${clean(r.name)}</strong></td>
+                  <td>${money2(r.sellingPrice)}</td>
+                  <td><input class="inline-input" data-price-sku="${clean(r.sku)}" type="number" step="0.01" value="${clean(r.priceChange)}"></td>
+                  <td>${money2(r.newPrice)}</td>
+                  <td>${money2(r.profitHour)}</td>
+                  <td>${money2(r.newNetProfitUnit)}</td>
+                  <td>${money2(r.newProfitHour)}</td>
+                  <td>${pct(r.newMargin)}</td>
+                  <td>${clean(r.recommendation)}</td>
+                  <td>${clean(r.notes)}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderVariants() {
+    const analysis = calculateAnalysis();
+    const grouped = Object.entries(groupBy(analysis, "category")).map(([category, rows]) => ({
+      category,
+      rows,
+      revenue: sum(rows, "revenue"),
+      netProfit: sum(rows, "netProfitTotal"),
+      profitHour: avg(rows.filter(x => x.profitHour > 0), "profitHour"),
+      units: sum(rows, "unitsSold"),
+      best: [...rows].sort((a,b)=>b.profitHour-a.profitHour)[0]
+    })).sort((a,b)=>b.netProfit-a.netProfit);
+
+    return `
+      <section class="grid grid-3 mb">
+        ${grouped.map(g => `
+          <div class="card">
+            <h3>${clean(g.category)}</h3>
+            <p>${nice(g.units,0)} units · ${money(g.revenue)} revenue</p>
+            <div class="hr"></div>
+            <p><strong>${money(g.netProfit)}</strong> net profit</p>
+            <p><strong>${money2(g.profitHour)}</strong> avg profit/hour</p>
+            <p class="soft">Best: ${clean(g.best?.name || "-")}</p>
+          </div>
+        `).join("")}
+      </section>
+      <section class="card">
+        <h2>SKU comparison</h2>
+        <div class="table-wrap">
+          ${table(
+            ["Category","SKU","Product","Variant","Units","Revenue","Net Profit","Profit/hour","Margin","Decision","Takeaway"],
+            analysis.sort((a,b)=>b.netProfitTotal-a.netProfitTotal).map(r => [
+              clean(r.category), clean(r.sku), `<strong>${clean(r.name)}</strong>`, clean(r.variant), nice(r.unitsSold,0), money(r.revenue),
+              money(r.netProfitTotal), money2(r.profitHour), pct(r.netMargin), badge(r.decision),
+              r.profitHour === Math.max(...analysis.map(x=>x.profitHour)) ? "Best profit/hour candidate" : (r.netProfitTotal === Math.max(...analysis.map(x=>x.netProfitTotal)) ? "Best total profit candidate" : "Compare against category average")
+            ])
+          )}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderWeekly() {
+    const s = getSummary();
+    const tasks = [...s.analysis]
+      .filter(x => x.priorityScore > 0)
+      .sort((a,b) => b.priorityScore - a.priorityScore)
+      .slice(0, 10);
+    const orderNow = s.reorder.filter(x => x.action === "Order Now").length;
+    const summaryText = `This week, your shop generated ${money(s.revenue)} in recent revenue and ${money(s.netProfit)} in estimated net profit. Average profit per labor hour is ${money2(s.profitHourAvg)}. Focus first on products marked Raise Price, Stop, Restock or Order Now.`;
+    return `
+      <section class="grid grid-2 mb">
+        <div class="card">
+          <h2>Seller summary copy</h2>
+          <div class="report-box" id="weeklySummary">${clean(summaryText)}</div>
+          <div class="btn-row mt">
+            <button class="btn btn-primary" data-action="copyWeekly">Copy summary</button>
+            <button class="btn" data-action="exportWeeklyCsv">Export checklist CSV</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Report numbers</h2>
+          <div class="progress-list">
+            ${progressRow("Keep products", s.actionCounts.Keep || 0, s.productsCount, s.actionCounts.Keep || 0)}
+            ${progressRow("Raise price products", s.actionCounts["Raise Price"] || 0, s.productsCount, s.actionCounts["Raise Price"] || 0)}
+            ${progressRow("Restock products", s.actionCounts.Restock || 0, s.productsCount, s.actionCounts.Restock || 0)}
+            ${progressRow("Stop products", s.actionCounts.Stop || 0, s.productsCount, s.actionCounts.Stop || 0)}
+            ${progressRow("Order now products", orderNow, s.productsCount, orderNow)}
+          </div>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Priority checklist</h2>
+        <div class="table-wrap">
+          ${table(
+            ["Priority","Action","SKU","Product","Reason","Done?"],
+            tasks.map((r, i) => [
+              i + 1, badge(r.decision), clean(r.sku), `<strong>${clean(r.name)}</strong>`, clean(r.decisionNote), "□"
+            ])
+          )}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderSettings() {
+    const fields = [
+      ["currency", "Currency", "text", "Display currency code: USD, EUR, GBP, TRY."],
+      ["listingFee", "Etsy Listing Fee", "number", "Flat listing fee per order/listing assumption."],
+      ["transactionFee", "Etsy Transaction Fee", "number", "Marketplace transaction fee as decimal, e.g. 0.065."],
+      ["paymentRate", "Payment Processing Rate", "number", "Payment processing rate as decimal."],
+      ["paymentFixedFee", "Payment Fixed Fee", "number", "Fixed payment fee per order."],
+      ["minProfitHour", "Minimum Profit / Labor Hour", "number", "Below this, labor economics are weak."],
+      ["minNetMargin", "Minimum Net Margin", "number", "Below this, price/cost action is triggered."],
+      ["defaultServiceZ", "Default Service Level Z", "number", "Safety stock service level fallback."],
+      ["lowSalesThreshold", "Low Sales Threshold 30D", "number", "Below this, mark as Test More."],
+      ["highReturnThreshold", "High Return Alert Threshold", "number", "Above this, mark as Test More."],
+      ["productCapacity", "Product Capacity", "number", "Planning capacity used for plan limits."],
+      ["defaultPriceIncrease", "Default Price Increase", "number", "Default simulator price change."]
+    ];
+    return `
+      <section class="card">
+        <div class="action-strip">
+          <h2>Model assumptions</h2>
+          <div class="btn-row">
+            <button class="btn" data-action="resetSettings">Reset settings</button>
+            <button class="btn btn-primary" data-action="saveSettings">Save settings</button>
+          </div>
+        </div>
+        <div class="grid grid-3">
+          ${fields.map(([key,label,type,help]) => `
+            <div class="field">
+              <label>${clean(label)}</label>
+              <input class="input" data-setting="${key}" type="${type}" step="0.01" value="${clean(state.settings[key])}">
+              <small class="soft">${clean(help)}</small>
+            </div>
+          `).join("")}
+        </div>
+        <div class="hr"></div>
+        <h2>Data tools</h2>
+        <div class="btn-row">
+          <button class="btn" data-action="downloadJson">Download JSON backup</button>
+          <label class="btn">
+            Import JSON backup
+            <input class="hidden" id="jsonImportInput" type="file" accept="application/json">
+          </label>
+          <button class="btn" data-action="resetSample">Reload sample data</button>
+          <button class="btn btn-danger" data-action="clearAll">Clear all data</button>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderMember() {
+    return `
+      <section class="grid grid-2">
+        <div class="card">
+          <h2>Your member details</h2>
+          <div class="grid">
+            <div class="field"><label>Customer email</label><input class="input" data-workspace="email" value="${clean(state.user?.email || "")}"></div>
+            <div class="field"><label>License key</label><input class="input" data-workspace="licenseKey" value="${clean(state.workspace.licenseKey || "")}"></div>
+            <div class="field"><label>Plan</label><select class="select" data-workspace="plan"><option ${state.workspace.plan==="Free Starter"?"selected":""}>Free Starter</option><option ${state.workspace.plan==="Full"?"selected":""}>Full</option></select></div>
+            <div class="field"><label>Subscription Status</label><select class="select" data-workspace="subscriptionStatus"><option ${state.workspace.subscriptionStatus==="Active"?"selected":""}>Active</option><option ${state.workspace.subscriptionStatus==="Past due"?"selected":""}>Past due</option><option ${state.workspace.subscriptionStatus==="Cancelled"?"selected":""}>Cancelled</option></select></div>
+            <button class="btn btn-primary" data-action="saveMember">Save member details</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Access logic</h2>
+          <p>Free Starter is forever free with full module access for up to 3 products. Full Planner unlocks unlimited products after Lemon Squeezy subscription sync.</p>
+          <div class="hr"></div>
+          <div class="grid">
+            <button class="btn btn-primary" data-action="upgradeNotice">Upgrade to Full Planner</button>
+            <button class="btn" data-action="simulateFull">Simulate Full access</button>
+            <button class="btn" data-action="simulatePastDue">Simulate Past due</button>
+          </div>
+        </div>
+      </section>
+      <section class="card mt">
+        <h2>Production backend checklist</h2>
+        <div class="table-wrap">
+          ${table(
+            ["Layer","What to connect","Purpose"],
+            [
+              ["Auth","Supabase Auth / Clerk","Real user login and workspace separation"],
+              ["Database","Supabase Postgres","Save products, sales, settings and reports"],
+              ["Billing","Lemon Squeezy API + webhooks","Plan validation and subscription status"],
+              ["Files","CSV upload parser","Import marketplace exports"],
+              ["Security","Row Level Security","Prevent users from seeing another seller's data"]
+            ]
+          )}
+        </div>
+      </section>
+    `;
+  }
+
+  function bindEvents() {
+    setTheme();
+
+    $("#loginForm")?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.currentTarget);
+      state.user = { email: String(fd.get("email") || "").trim() };
+      state.workspace.name = String(fd.get("workspace") || "My Workspace").trim();
+      state.workspace.licenseKey = String(fd.get("license") || "").trim();
+      saveState();
+      render();
+      toast("Workspace opened.");
+    });
+
+    $$("[data-nav]").forEach(btn => btn.addEventListener("click", () => {
+      state.ui.view = btn.dataset.nav;
+      saveState();
+      document.body.classList.remove("sidebar-open");
+      render();
+    }));
+
+    $$("[data-ui]").forEach(input => input.addEventListener("input", () => {
+      state.ui[input.dataset.ui] = input.value;
+      saveState();
+      render();
+    }));
+
+    $$("[data-product-index]").forEach(input => input.addEventListener("change", () => {
+      const i = Number(input.dataset.productIndex);
+      const field = input.dataset.field;
+      if (!state.products[i]) return;
+      state.products[i][field] = input.type === "number" ? num(input.value) : input.value;
+      saveState();
+      render();
+    }));
+
+    $$("[data-sale-index]").forEach(input => input.addEventListener("change", () => {
+      const i = Number(input.dataset.saleIndex);
+      const field = input.dataset.field;
+      if (!state.sales[i]) return;
+      state.sales[i][field] = input.type === "number" ? num(input.value) : input.value;
+      saveState();
+      render();
+    }));
+
+    $$("[data-setting]").forEach(input => input.addEventListener("change", () => {
+      const key = input.dataset.setting;
+      state.settings[key] = input.type === "number" ? num(input.value) : input.value.toUpperCase();
+      saveState();
+      render();
+    }));
+
+    $$("[data-price-sku]").forEach(input => input.addEventListener("change", () => {
+      state.priceChanges[input.dataset.priceSku] = num(input.value);
+      saveState();
+      render();
+    }));
+
+    $$("[data-workspace]").forEach(input => input.addEventListener("change", () => {
+      const key = input.dataset.workspace;
+      if (key === "email") state.user = { ...(state.user || {}), email: input.value };
+      else state.workspace[key] = input.value;
+      saveState();
+      render();
+    }));
+
+    $("#jsonImportInput")?.addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      try {
+        const data = JSON.parse(await file.text());
+        state = { ...defaultState(), ...data, ui: { ...defaultState().ui, ...(data.ui || {}), view: "dashboard" } };
+        saveState();
+        render();
+        toast("JSON backup imported.");
+      } catch (err) {
+        toast("Invalid JSON backup.");
+      }
+    });
+
+    $$("[data-action]").forEach(btn => btn.addEventListener("click", handleAction));
+  }
+
+  function handleAction(e) {
+    const action = e.currentTarget.dataset.action;
+    if (action === "toggleSidebar") document.body.classList.toggle("sidebar-open");
+    if (action === "themeToggle") {
+      state.ui.theme = state.ui.theme === "light" ? "dark" : "light";
+      saveState(); render();
+    }
+    if (action === "logout") {
+      state.user = null; saveState(); render();
+    }
+    if (action === "addProduct") addProduct();
+    if (action === "deleteProduct") deleteProduct(Number(e.currentTarget.dataset.index));
+    if (action === "addSale") addSale();
+    if (action === "deleteSale") deleteSale(Number(e.currentTarget.dataset.index));
+    if (action === "importSalesCsv") importSalesCsv();
+    if (action === "exportProductsCsv") exportProductsCsv();
+    if (action === "exportSalesCsv") exportSalesCsv();
+    if (action === "exportAnalysisCsv") exportAnalysisCsv();
+    if (action === "exportReorderCsv") exportReorderCsv();
+    if (action === "exportPricingCsv") exportPricingCsv();
+    if (action === "exportWeeklyCsv") exportWeeklyCsv();
+    if (action === "copyWeekly") copyWeekly();
+    if (action === "resetSettings") { state.settings = structuredClone(DEFAULT_SETTINGS); saveState(); render(); toast("Settings reset."); }
+    if (action === "saveSettings") { saveState(); toast("Settings saved."); }
+    if (action === "downloadJson") downloadJson();
+    if (action === "resetSample" || action === "resetSampleBeforeLogin") resetSample(action === "resetSampleBeforeLogin");
+    if (action === "clearAll") clearAll();
+    if (action === "saveMember") { saveState(); toast("Member details saved."); }
+    if (action === "upgradeNotice") { toast("Connect Supabase Auth first, then this button will call create-checkout."); }
+    if (action === "simulateFull") { state.workspace.plan = "Full"; state.workspace.subscriptionStatus = "Active"; saveState(); render(); toast("Full access simulated."); }
+    if (action === "simulatePastDue") { state.workspace.subscriptionStatus = "Past due"; saveState(); render(); toast("Past due status simulated."); }
+  }
+
+  function addProduct() {
+    if (state.workspace.plan !== "Full" && state.products.length >= FREE_PRODUCT_LIMIT) {
+      state.ui.view = "member";
+      saveState();
+      render();
+      toast("Free Starter supports up to 3 products. Upgrade to Full Planner for unlimited products.");
+      return;
+    }
+    const id = `SKU-${String(state.products.length + 1).padStart(3, "0")}`;
+    state.products.push({
+      id, sku: id, name: "New Product", category: "New Category", variant: "Default",
+      sellingPrice: 25, materialCost: 5, packagingCost: 1, shippingCost: 3,
+      laborMinutes: 30, currentStock: 10, leadTimeDays: 10, serviceLevelZ: num(state.settings.defaultServiceZ),
+      demandStdDevDay: 1, returnRate: 0.03, adSpendUnit: 1, targetHourlyWage: num(state.settings.minProfitHour), notes: ""
+    });
+    saveState(); render(); toast("Product added.");
+  }
+
+  function deleteProduct(index) {
+    const sku = state.products[index]?.sku;
+    state.products.splice(index, 1);
+    if (sku) delete state.priceChanges[sku];
+    saveState(); render(); toast("Product deleted.");
+  }
+
+  function addSale() {
+    const sku = $("#newSaleSku")?.value || state.products[0]?.sku || "";
+    const product = state.products.find(p => p.sku === sku);
+    const units = num($("#newSaleUnits")?.value, 1);
+    const revenueInput = num($("#newSaleRevenue")?.value, 0);
+    state.sales.unshift({
+      date: $("#newSaleDate")?.value || todayIso(),
+      sku,
+      unitsSold: units,
+      revenue: revenueInput > 0 ? revenueInput : units * num(product?.sellingPrice),
+      refunds: num($("#newSaleRefunds")?.value),
+      adSpend: num($("#newSaleAd")?.value),
+      channel: $("#newSaleChannel")?.value || "Etsy",
+      notes: $("#newSaleNotes")?.value || ""
+    });
+    saveState(); render(); toast("Sale added.");
+  }
+
+  function deleteSale(index) {
+    state.sales.splice(index, 1);
+    saveState(); render(); toast("Sale deleted.");
+  }
+
+  function resetSample(keepLogin = false) {
+    const previousUser = state.user;
+    state = defaultState();
+    if (keepLogin) state.user = previousUser;
+    saveState();
+    render();
+    toast("Sample data reloaded.");
+  }
+
+  function clearAll() {
+    if (!confirm("Clear all products, sales and settings?")) return;
+    const user = state.user;
+    const workspace = state.workspace;
+    state = defaultState();
+    state.user = user;
+    state.workspace = workspace;
+    state.products = [];
+    state.sales = [];
+    saveState();
+    render();
+    toast("All model data cleared.");
+  }
+
+  function parseCsv(text) {
+    const rows = [];
+    let row = [], cell = "", quote = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i], n = text[i + 1];
+      if (c === '"' && quote && n === '"') { cell += '"'; i++; }
+      else if (c === '"') quote = !quote;
+      else if (c === "," && !quote) { row.push(cell.trim()); cell = ""; }
+      else if ((c === "\n" || c === "\r") && !quote) {
+        if (cell || row.length) { row.push(cell.trim()); rows.push(row); row = []; cell = ""; }
+        if (c === "\r" && n === "\n") i++;
+      } else cell += c;
+    }
+    if (cell || row.length) { row.push(cell.trim()); rows.push(row); }
+    return rows.filter(r => r.some(c => c !== ""));
+  }
+
+  function normalizeHeader(h) {
+    return String(h).toLowerCase().replace(/[^a-z0-9]/g, "");
+  }
+
+  function importSalesCsv() {
+    const text = $("#salesCsvPaste")?.value || "";
+    const rows = parseCsv(text);
+    if (rows.length < 2) return toast("Paste CSV with headers first.");
+    const headers = rows[0].map(normalizeHeader);
+    const index = (names) => names.map(normalizeHeader).map(n => headers.indexOf(n)).find(i => i >= 0);
+    const map = {
+      date: index(["date"]),
+      sku: index(["sku"]),
+      unitsSold: index(["units sold", "units", "quantity"]),
+      revenue: index(["revenue", "gross sales", "sales"]),
+      refunds: index(["refunds", "refund"]),
+      adSpend: index(["ad spend", "ads", "marketing"]),
+      channel: index(["channel", "marketplace"]),
+      notes: index(["notes", "note"])
+    };
+    const newRows = rows.slice(1).map(r => ({
+      date: r[map.date] || todayIso(),
+      sku: r[map.sku] || "",
+      unitsSold: num(r[map.unitsSold]),
+      revenue: num(r[map.revenue]),
+      refunds: num(r[map.refunds]),
+      adSpend: num(r[map.adSpend]),
+      channel: r[map.channel] || "Imported",
+      notes: r[map.notes] || "CSV import"
+    })).filter(r => r.sku && r.unitsSold > 0);
+    state.sales = [...newRows, ...state.sales];
+    saveState(); render(); toast(`${newRows.length} sales rows imported.`);
+  }
+
+  function toCsv(rows) {
+    if (!rows.length) return "";
+    const headers = Object.keys(rows[0]);
+    const esc = (v) => {
+      const s = String(v ?? "");
+      return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    return [headers.join(","), ...rows.map(r => headers.map(h => esc(r[h])).join(","))].join("\n");
+  }
+
+  function download(filename, content, type = "text/csv") {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename; document.body.appendChild(a); a.click();
+    a.remove(); URL.revokeObjectURL(url);
+  }
+
+  function exportProductsCsv() {
+    download("mavenory-products.csv", toCsv(state.products));
+  }
+
+  function exportSalesCsv() {
+    download("mavenory-sales.csv", toCsv(state.sales));
+  }
+
+  function exportAnalysisCsv() {
+    const rows = calculateAnalysis().map(({id, priorityScore, decisionNote, ...r}) => r);
+    download("mavenory-product-analysis.csv", toCsv(rows));
+  }
+
+  function exportReorderCsv() {
+    const rows = calculateReorder().map(r => ({
+      sku: r.sku, product: r.name, avgDailySales: r.avgDailySales, leadTimeDays: r.leadTimeDays,
+      safetyStock: r.safetyStock, reorderPoint: r.reorderPoint, currentStock: r.currentStock,
+      daysUntilStockout: r.daysUntilStockout, suggestedOrderQty: r.suggestedOrderQty, action: r.action
+    }));
+    download("mavenory-reorder-planner.csv", toCsv(rows));
+  }
+
+  function exportPricingCsv() {
+    const rows = calculatePricing().map(r => ({
+      sku: r.sku, product: r.name, currentPrice: r.sellingPrice, priceChange: r.priceChange,
+      newPrice: r.newPrice, currentProfitHour: r.profitHour, newNetProfitUnit: r.newNetProfitUnit,
+      newProfitHour: r.newProfitHour, newMargin: r.newMargin, recommendation: r.recommendation, notes: r.notes
+    }));
+    download("mavenory-pricing-simulator.csv", toCsv(rows));
+  }
+
+  function exportWeeklyCsv() {
+    const rows = calculateAnalysis()
+      .filter(x => x.priorityScore > 0)
+      .sort((a,b) => b.priorityScore - a.priorityScore)
+      .slice(0, 10)
+      .map((r, i) => ({ priority: i + 1, action: r.decision, sku: r.sku, product: r.name, reason: r.decisionNote, done: "" }));
+    download("mavenory-weekly-checklist.csv", toCsv(rows));
+  }
+
+  function downloadJson() {
+    download("mavenory-webapp-backup.json", JSON.stringify(state, null, 2), "application/json");
+  }
+
+  async function copyWeekly() {
+    const text = $("#weeklySummary")?.textContent || "";
+    try {
+      await navigator.clipboard.writeText(text);
+      toast("Weekly summary copied.");
+    } catch {
+      toast("Copy failed. Select the text manually.");
+    }
+  }
+
+  function render() {
+    setTheme();
+    $("#app").innerHTML = state.user ? renderLayout() : renderAuth();
+    bindEvents();
+  }
+
+  render();
+})();
+
+  </script>
+</body>
+</html>
