@@ -3,7 +3,7 @@
 window.MAVENORY_CONFIG = {
   BRAND_NAME: "Mavenory Systems",
   PRODUCT_NAME: "Profit Planner",
-  SITE_URL: "https://mavenorysystems.com",
+  SITE_URL: "https://mavenorysystems.pages.dev",
 
   // Replace these two values before going live:
   SUPABASE_URL: "https://wibwnhjtxbhzcfoxnszo.supabase.co",
