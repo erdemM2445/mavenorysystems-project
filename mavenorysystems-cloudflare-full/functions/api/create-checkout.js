@@ -64,8 +64,7 @@ export async function onRequestPost({ request, env }) {
             redirect_url: appUrl,
             receipt_button_text: "Open Mavenory Systems",
             receipt_link_url: appUrl,
-            receipt_thank_you_note: "Thanks for upgrading. Your Full Planner access will be activated automatically. If it does not unlock immediately, refresh your dashboard in a few seconds."
-          }
+            receipt_thank_you_note: "Thanks for upgrading.\nYour Full Planner access will be activated automatically.\nIf it does not unlock immediately, refresh your dashboard in a few seconds."          }
         },
         relationships: {
           store: { data: { type: "stores", id: String(env.LEMONSQUEEZY_STORE_ID) } },
