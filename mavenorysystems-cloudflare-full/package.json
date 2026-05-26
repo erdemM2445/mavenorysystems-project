@@ -1,0 +1,14 @@
+{
+  "name": "mavenorysystems-profit-planner-cloudflare",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Mavenory Systems Profit Planner - Cloudflare Pages + Supabase + Lemon Squeezy",
+  "scripts": {
+    "check": "node --check assets/app.js && node --check functions/api/create-checkout.js && node --check functions/api/lemonsqueezy-webhook.js",
+    "serve": "npx wrangler pages dev ."
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
