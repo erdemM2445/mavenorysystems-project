@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mavenory Systems Profit Planner | Profit, Pricing & Reorder System for Handmade Sellers</title>
+  <meta name="description" content="Mavenory Systems Profit Planner helps handmade and Etsy-style sellers see which products to keep, raise price, restock, stop, or test more using profit per labor hour, net margin, inventory and pricing signals." />
+  <meta property="og:title" content="Mavenory Systems Profit Planner" />
+  <meta property="og:description" content="A weekly profit, pricing and reorder decision system for handmade sellers." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#15120d" />
+  <style>
+    :root {
+      --bg: #f8f3eb;
+      --bg-2: #fffaf2;
+      --ink: #1d1710;
+      --muted: #75695c;
+      --line: #e7dacb;
+      --card: rgba(255, 250, 242, 0.84);
+      --card-solid: #fffaf2;
+      --accent: #9b5c22;
+      --accent-2: #d59c59;
+      --accent-dark: #6f3d12;
+      --green: #1e6b4e;
+      --green-bg: #eaf4ef;
+      --red: #9c3d2e;
+      --red-bg: #faece8;
+      --amber: #9a640c;
+      --amber-bg: #fff0cf;
+      --shadow: 0 24px 70px rgba(50, 31, 13, 0.13);
+      --shadow-soft: 0 16px 40px rgba(50, 31, 13, 0.09);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 16% 4%, rgba(213, 156, 89, 0.24), transparent 29%),
+        radial-gradient(circle at 90% 8%, rgba(155, 92, 34, 0.14), transparent 26%),
+        linear-gradient(180deg, #fbf1e2 0%, var(--bg) 46%, #fffaf3 100%);
+      line-height: 1.55;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img, svg { max-width: 100%; display: block; }
+    button, input { font: inherit; }
+
+    .site-shell { overflow: hidden; }
+    .container { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+
+    .nav-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: rgba(248, 243, 235, 0.76);
+      border-bottom: 1px solid rgba(231, 218, 203, 0.72);
+    }
+    .nav {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 850;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+    }
+    .logo {
+      width: 39px;
+      height: 39px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, var(--ink), var(--accent));
+      color: #fff8ed;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 10px 28px rgba(111, 61, 18, 0.24);
+      font-weight: 900;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      color: #6d5f51;
+      font-size: 14px;
+      font-weight: 650;
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-actions { display: flex; gap: 10px; align-items: center; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 46px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 780;
+      border: 1px solid transparent;
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary {
+      color: #fff9ef;
+      background: linear-gradient(135deg, #1f1710, #7d4414 62%, #9b5c22);
+      box-shadow: 0 16px 36px rgba(111, 61, 18, 0.25);
+    }
+    .btn-primary:hover { box-shadow: 0 20px 42px rgba(111, 61, 18, 0.30); }
+    .btn-secondary {
+      background: rgba(255, 250, 242, 0.82);
+      border-color: rgba(155, 92, 34, 0.2);
+      color: var(--ink);
+    }
+    .btn-small { min-height: 40px; padding: 9px 14px; font-size: 14px; }
+
+    .hero { padding: 82px 0 76px; position: relative; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.02fr .98fr;
+      gap: 50px;
+      align-items: center;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid rgba(155, 92, 34, 0.18);
+      border-radius: 999px;
+      background: rgba(255, 250, 242, 0.72);
+      color: #6f3d12;
+      font-weight: 780;
+      font-size: 13px;
+      box-shadow: var(--shadow-soft);
+    }
+    .dot { width: 8px; height: 8px; border-radius: 99px; background: var(--green); box-shadow: 0 0 0 5px rgba(30, 107, 78, 0.13); }
+    h1 {
+      font-size: clamp(43px, 5.5vw, 76px);
+      line-height: .96;
+      letter-spacing: -0.07em;
+      margin: 24px 0 22px;
+    }
+    .gradient-text {
+      background: linear-gradient(110deg, #1d1710 0%, #6f3d12 58%, #c8873a 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero-copy {
+      font-size: clamp(18px, 2vw, 21px);
+      color: #5f5448;
+      max-width: 650px;
+      margin: 0 0 30px;
+    }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .micro-proof {
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      color: #65584b;
+      font-size: 14px;
+      font-weight: 650;
+    }
+    .micro-proof span {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 11px;
+      border-radius: 999px;
+      background: rgba(255, 250, 242, 0.72);
+      border: 1px solid rgba(231, 218, 203, 0.9);
+    }
+
+    .hero-panel {
+      border: 1px solid rgba(155, 92, 34, 0.18);
+      border-radius: 34px;
+      background: rgba(255, 250, 242, 0.76);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      position: relative;
+    }
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: 34px;
+      background: linear-gradient(135deg, rgba(255,255,255,.7), rgba(213,156,89,.22), transparent 55%);
+      pointer-events: none;
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      padding: 1px;
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+    .app-card {
+      border-radius: 25px;
+      overflow: hidden;
+      background: #fffdf8;
+      border: 1px solid rgba(231, 218, 203, 0.9);
+    }
+    .app-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #fffdf8, #fff5e8);
+    }
+    .window-dots { display: flex; gap: 7px; }
+    .window-dots i { width: 10px; height: 10px; border-radius: 50%; background: #d9c4aa; display: block; }
+    .app-title { font-size: 13px; font-weight: 850; color: #3b2b20; }
+    .app-body { padding: 18px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+    .kpi {
+      border: 1px solid #eadac8;
+      background: #fff8ee;
+      border-radius: 18px;
+      padding: 14px;
+      min-height: 98px;
+    }
+    .kpi small { color: var(--muted); display: block; font-weight: 720; font-size: 12px; margin-bottom: 8px; }
+    .kpi strong { font-size: 25px; letter-spacing: -0.04em; display: block; }
+    .kpi em { font-style: normal; color: var(--green); font-weight: 780; font-size: 12px; }
+    .table-preview {
+      border: 1px solid #eadac8;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #fffdf9;
+    }
+    .table-row {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr .8fr .8fr;
+      gap: 0;
+      align-items: center;
+      border-bottom: 1px solid #efe3d4;
+      font-size: 13px;
+    }
+    .table-row:last-child { border-bottom: none; }
+    .table-row > div { padding: 11px 12px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .table-head { background: #2a1c12; color: #fff7ed; font-weight: 780; }
+    .pill {
+      display: inline-flex;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 12px;
+    }
+    .pill.green { color: var(--green); background: var(--green-bg); }
+    .pill.red { color: var(--red); background: var(--red-bg); }
+    .pill.amber { color: var(--amber); background: var(--amber-bg); }
+    .floating-note {
+      position: absolute;
+      left: -25px;
+      bottom: 35px;
+      width: 230px;
+      padding: 14px 16px;
+      border-radius: 19px;
+      background: #1e1710;
+      color: #fff7ec;
+      box-shadow: 0 18px 46px rgba(29, 23, 16, .26);
+      transform: rotate(-2deg);
+    }
+    .floating-note strong { font-size: 14px; display: block; margin-bottom: 4px; }
+    .floating-note span { color: #e8d2ba; font-size: 13px; display: block; line-height: 1.4; }
+
+    .section { padding: 84px 0; }
+    .section-tight { padding: 58px 0; }
+    .section-head { max-width: 760px; margin: 0 auto 42px; text-align: center; }
+    .section-kicker {
+      color: var(--accent-dark);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+    h2 {
+      margin: 0;
+      font-size: clamp(32px, 4vw, 54px);
+      line-height: 1.02;
+      letter-spacing: -0.055em;
+    }
+    .section-head p {
+      margin: 18px auto 0;
+      color: #675b4d;
+      font-size: 18px;
+    }
+
+    .problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .problem-card, .feature-card, .pricing-card, .faq-card, .step-card {
+      border: 1px solid rgba(231, 218, 203, .95);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 250, 242, .76);
+      box-shadow: var(--shadow-soft);
+      padding: 24px;
+    }
+    .problem-card strong, .feature-card strong, .step-card strong { display: block; font-size: 18px; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .problem-card p, .feature-card p, .step-card p, .faq-card p { color: #675b4d; margin: 0; }
+    .icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #fff4e3, #ecd0aa);
+      color: var(--accent-dark);
+      font-weight: 900;
+    }
+
+    .product-strip {
+      background: #1e1710;
+      color: #fff7ec;
+      border-radius: 34px;
+      overflow: hidden;
+      box-shadow: 0 28px 80px rgba(29, 23, 16, 0.25);
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      border: 1px solid rgba(255,255,255,.1);
+    }
+    .product-copy { padding: 42px; }
+    .product-copy h2 { color: #fff7ec; }
+    .product-copy p { color: #d9c6b2; font-size: 18px; }
+    .module-list { display: grid; gap: 12px; margin-top: 26px; }
+    .module-item {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .check {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(213,156,89,.22);
+      color: #ffd79f;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+    }
+    .module-item strong { display: block; margin-bottom: 3px; }
+    .module-item span { color: #cebba5; font-size: 14px; }
+    .product-visual {
+      padding: 34px;
+      background:
+        radial-gradient(circle at 70% 10%, rgba(213,156,89,.25), transparent 28%),
+        linear-gradient(135deg, rgba(255,255,255,.06), transparent);
+      display: flex;
+      align-items: center;
+    }
+    .decision-board {
+      width: 100%;
+      background: #fffaf2;
+      color: var(--ink);
+      border-radius: 25px;
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 22px 70px rgba(0,0,0,.22);
+      overflow: hidden;
+    }
+    .decision-board h3 { margin: 0; padding: 20px 20px 0; font-size: 20px; letter-spacing: -0.03em; }
+    .decision-board .sub { color: #74685b; padding: 4px 20px 18px; font-size: 14px; }
+    .decision-list { padding: 0 14px 14px; display: grid; gap: 10px; }
+    .decision-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 13px 14px;
+      border: 1px solid #eadac8;
+      border-radius: 16px;
+      background: #fffdf8;
+    }
+    .decision-row b { display: block; font-size: 14px; }
+    .decision-row small { color: #74685b; }
+
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .feature-card { min-height: 248px; }
+    .feature-card ul { margin: 16px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; color: #675b4d; }
+    .feature-card li { display: grid; grid-template-columns: 18px 1fr; gap: 7px; }
+    .feature-card li::before { content: "✓"; color: var(--green); font-weight: 900; }
+
+    .calculator-wrap {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+    .calc-card {
+      background: #fffaf2;
+      border: 1px solid #eadac8;
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      padding: 26px;
+    }
+    .calc-card h3 { margin: 0 0 8px; font-size: 25px; letter-spacing: -0.035em; }
+    .calc-card p { margin: 0 0 22px; color: #6a5e51; }
+    .input-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    label { display: grid; gap: 7px; color: #5f5448; font-size: 13px; font-weight: 800; }
+    input {
+      width: 100%;
+      border: 1px solid #ddcbb6;
+      border-radius: 14px;
+      padding: 12px 13px;
+      background: #fffdf8;
+      color: var(--ink);
+      outline: none;
+    }
+    input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(155,92,34,.12); }
+    .result-panel {
+      background: #1e1710;
+      color: #fff7ec;
+      border-radius: 30px;
+      padding: 28px;
+      box-shadow: 0 24px 70px rgba(29, 23, 16, .22);
+      display: grid;
+      align-content: center;
+    }
+    .result-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 20px 0; }
+    .result-box {
+      padding: 17px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.1);
+    }
+    .result-box small { display: block; color: #d9c6b2; font-weight: 780; margin-bottom: 6px; }
+    .result-box strong { font-size: 30px; letter-spacing: -0.04em; }
+    .decision-output {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(213,156,89,.16);
+      border: 1px solid rgba(213,156,89,.22);
+      color: #ffe0b3;
+      font-weight: 780;
+    }
+    .calc-note { color: #d9c6b2; font-size: 13px; margin-top: 16px; }
+
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; counter-reset: step; }
+    .step-card { position: relative; padding-top: 58px; }
+    .step-card::before {
+      counter-increment: step;
+      content: "0" counter(step);
+      position: absolute;
+      top: 20px;
+      left: 24px;
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--accent-dark);
+      background: #f3dfc6;
+      border-radius: 999px;
+      padding: 5px 10px;
+    }
+
+    .who-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .fit-card {
+      border-radius: 30px;
+      padding: 30px;
+      border: 1px solid #eadac8;
+      background: #fffaf2;
+      box-shadow: var(--shadow-soft);
+    }
+    .fit-card.dark { background: #1e1710; color: #fff7ec; border-color: rgba(255,255,255,.1); }
+    .fit-card h3 { margin: 0 0 18px; font-size: 26px; letter-spacing: -0.04em; }
+    .fit-card ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+    .fit-card li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; color: #62564a; }
+    .fit-card.dark li { color: #d9c6b2; }
+    .fit-card li::before { font-weight: 900; }
+    .fit-card.good li::before { content: "✓"; color: var(--green); }
+    .fit-card.dark li::before { content: "×"; color: #ffb29e; }
+
+    .pricing-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: 20px; align-items: stretch; }
+    .pricing-card { padding: 30px; position: relative; overflow: hidden; }
+    .pricing-card.featured {
+      background: linear-gradient(135deg, #1e1710, #6f3d12);
+      color: #fff7ec;
+      border-color: rgba(255,255,255,.12);
+      box-shadow: 0 26px 82px rgba(111,61,18,.30);
+    }
+    .badge {
+      display: inline-flex;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(213,156,89,.16);
+      color: #7a4619;
+      font-weight: 900;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .featured .badge { background: rgba(255,255,255,.12); color: #ffe0b3; }
+    .price { font-size: 48px; letter-spacing: -0.06em; line-height: 1; margin: 22px 0 8px; font-weight: 900; }
+    .pricing-card p { color: #675b4d; margin: 0; }
+    .pricing-card.featured p { color: #dcc9b4; }
+    .pricing-card ul { list-style: none; margin: 24px 0; padding: 0; display: grid; gap: 11px; }
+    .pricing-card li { display: grid; grid-template-columns: 20px 1fr; gap: 9px; color: #5f5448; }
+    .pricing-card.featured li { color: #efdec9; }
+    .pricing-card li::before { content: "✓"; color: var(--green); font-weight: 900; }
+    .featured li::before { color: #ffd79f; }
+    .pricing-card .btn { width: 100%; }
+    .price-note { font-size: 13px; margin-top: 14px !important; }
+
+    .faq-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .faq-card h3 { margin: 0 0 8px; font-size: 18px; letter-spacing: -0.02em; }
+
+    .final-cta {
+      border-radius: 36px;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(213,156,89,.28), transparent 35%),
+        linear-gradient(135deg, #1e1710, #6f3d12);
+      color: #fff7ec;
+      padding: 52px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 24px;
+      box-shadow: 0 30px 90px rgba(111,61,18,.30);
+    }
+    .final-cta h2 { color: #fff7ec; max-width: 760px; }
+    .final-cta p { color: #e0cbb6; font-size: 18px; margin: 16px 0 0; max-width: 680px; }
+    .final-cta .btn-primary { background: #fff7ec; color: #1e1710; box-shadow: none; }
+    footer { padding: 46px 0; color: #776a5d; font-size: 14px; }
+    .footer-row { display: flex; justify-content: space-between; gap: 20px; align-items: center; flex-wrap: wrap; }
+    .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+
+    .mobile-menu-btn { display: none; }
+
+    @media (max-width: 980px) {
+      .hero-grid, .product-strip, .calculator-wrap, .pricing-grid, .who-grid, .final-cta { grid-template-columns: 1fr; }
+      .floating-note { display: none; }
+      .problem-grid, .features-grid { grid-template-columns: 1fr 1fr; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .final-cta { text-align: left; }
+      .nav-links { display: none; }
+      .mobile-menu-btn { display: inline-flex; }
+    }
+
+    @media (max-width: 650px) {
+      .container { width: min(100% - 28px, var(--max)); }
+      .nav { height: 68px; }
+      .hero { padding: 52px 0 52px; }
+      .section { padding: 64px 0; }
+      .hero-actions, .nav-actions { width: 100%; }
+      .nav-actions { justify-content: flex-end; }
+      .nav-actions .btn-secondary { display: none; }
+      .btn { width: 100%; }
+      .nav-actions .btn { width: auto; }
+      .kpi-grid, .problem-grid, .features-grid, .steps, .faq-grid, .input-grid, .result-grid { grid-template-columns: 1fr; }
+      .product-copy, .product-visual, .final-cta { padding: 28px; }
+      .table-row { grid-template-columns: 1fr .8fr; }
+      .table-row > div:nth-child(3), .table-row > div:nth-child(4) { display: none; }
+      .price { font-size: 40px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="nav-wrap">
+      <div class="container nav">
+        <a href="#top" class="brand" aria-label="Mavenory Systems Profit Planner home">
+          <span class="logo">M</span>
+          <span>Mavenory Systems Profit Planner</span>
+        </a>
+        <nav class="nav-links" aria-label="Main navigation">
+          <a href="#problem">Problem</a>
+          <a href="#modules">Modules</a>
+          <a href="#calculator">Calculator</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+        <div class="nav-actions">
+          <a class="btn btn-secondary btn-small" href="#calculator">Try calculator</a>
+          <a class="btn btn-primary btn-small" href="#pricing">Start Free</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <div class="eyebrow"><span class="dot"></span> Built for Etsy & handmade sellers managing 10–100 SKUs</div>
+            <h1>Stop guessing which products are actually worth your time.</h1>
+            <p class="hero-copy">Mavenory Systems Profit Planner turns your sales, costs, labor minutes and stock levels into clear weekly decisions: <strong>Keep, Raise Price, Restock, Stop, or Test More.</strong></p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#pricing">Start Free</a>
+              <a class="btn btn-secondary" href="#modules">See what is inside</a>
+            </div>
+            <div class="micro-proof" aria-label="Key product capabilities">
+              <span>✓ Profit per labor hour</span>
+              <span>✓ Reorder points</span>
+              <span>✓ Pricing simulator</span>
+              <span>✓ Weekly action report</span>
+            </div>
+          </div>
+
+          <div class="hero-panel" aria-label="Dashboard preview">
+            <div class="app-card">
+              <div class="app-top">
+                <div class="window-dots"><i></i><i></i><i></i></div>
+                <div class="app-title">Weekly Profit Dashboard</div>
+              </div>
+              <div class="app-body">
+                <div class="kpi-grid">
+                  <div class="kpi"><small>Revenue</small><strong>$13,115</strong><em>recent period</em></div>
+                  <div class="kpi"><small>Net Profit</small><strong>$4,398</strong><em>after costs</em></div>
+                  <div class="kpi"><small>Avg Profit / Hour</small><strong>$14.87</strong><em>labor signal</em></div>
+                </div>
+                <div class="table-preview">
+                  <div class="table-row table-head"><div>Product</div><div>Profit / Hr</div><div>Stock</div><div>Decision</div></div>
+                  <div class="table-row"><div>Minimalist Earrings</div><div>$34.17</div><div>24</div><div><span class="pill green">Keep</span></div></div>
+                  <div class="table-row"><div>Rose Bath Bomb Set</div><div>$4.14</div><div>4</div><div><span class="pill amber">Raise Price</span></div></div>
+                  <div class="table-row"><div>Wedding Favor Soap</div><div>$10.68</div><div>3</div><div><span class="pill red">Stop</span></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="floating-note">
+              <strong>Weekly decision engine</strong>
+              <span>Find underpriced, labor-heavy and stockout-risk products before they quietly drain profit.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="problem">
+        <div class="container">
+          <div class="section-head">
+            <div class="section-kicker">The real problem</div>
+            <h2>Revenue looks good until labor, fees and stockouts enter the room.</h2>
+            <p>Most handmade sellers know sales volume. Far fewer know which SKUs deserve production time, which should be repriced, and which are creating invisible operational drag.</p>
+          </div>
+          <div class="problem-grid">
+            <article class="problem-card">
+              <div class="icon">$</div>
+              <strong>Profit is hidden behind marketplace fees.</strong>
+              <p>Listing fees, transaction fees, processing fees, ad spend, refunds and variable costs make “best sellers” hard to judge.</p>
+            </article>
+            <article class="problem-card">
+              <div class="icon">h</div>
+              <strong>Labor-heavy products can look successful.</strong>
+              <p>A product with strong revenue can still pay less than your target hourly wage once production time is included.</p>
+            </article>
+            <article class="problem-card">
+              <div class="icon">↻</div>
+              <strong>Reorders happen too late.</strong>
+              <p>Without safety stock and lead time logic, sellers either stock out of winners or overbuy slow-moving products.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-tight" id="modules">
+        <div class="container product-strip">
+          <div class="product-copy">
+            <div class="section-kicker">What it becomes</div>
+            <h2>A weekly operating system, not just a planner.</h2>
+            <p>The full workbook combines product inputs, sales history, profit calculations, reorder logic, pricing tests and a weekly action checklist in one connected flow.</p>
+            <div class="module-list">
+              <div class="module-item"><span class="check">✓</span><div><strong>Product Input</strong><span>One row per SKU with price, material, packaging, shipping, labor, stock, lead time, demand variation and target hourly wage.</span></div></div>
+              <div class="module-item"><span class="check">✓</span><div><strong>Product Analysis</strong><span>Net profit, net margin, profit per labor hour, revenue, return rate and decision note for each product.</span></div></div>
+              <div class="module-item"><span class="check">✓</span><div><strong>Reorder Planner</strong><span>Safety stock, reorder point, days until stockout, suggested order quantity and order-now signals.</span></div></div>
+              <div class="module-item"><span class="check">✓</span><div><strong>Pricing Simulator</strong><span>Test price changes before touching your listings and see the effect on margin and hourly profit.</span></div></div>
+            </div>
+          </div>
+          <div class="product-visual">
+            <div class="decision-board">
+              <h3>Decision categories</h3>
+              <div class="sub">Every SKU is translated into a practical next step.</div>
+              <div class="decision-list">
+                <div class="decision-row"><div><b>Keep</b><small>Healthy economics. Monitor weekly.</small></div><span class="pill green">1 product</span></div>
+                <div class="decision-row"><div><b>Raise Price</b><small>Margin or profit/hour is below target.</small></div><span class="pill amber">1 product</span></div>
+                <div class="decision-row"><div><b>Restock</b><small>Demand and stock level need review.</small></div><span class="pill green">4 products</span></div>
+                <div class="decision-row"><div><b>Stop</b><small>Labor or economics are weak.</small></div><span class="pill red">6 products</span></div>
+                <div class="decision-row"><div><b>Order Now</b><small>Lead time and stockout risk are urgent.</small></div><span class="pill amber">8 products</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-head">
+            <div class="section-kicker">Core features</div>
+            <h2>Everything needed for a focused weekly shop review.</h2>
+            <p>Designed for sellers who want better business decisions without building a complex analytics system from scratch.</p>
+          </div>
+          <div class="features-grid">
+            <article class="feature-card">
+              <div class="icon">01</div>
+              <strong>True product profitability</strong>
+              <p>Calculate estimated net profit per SKU after common marketplace fees, variable costs, ad spend and refunds.</p>
+              <ul><li>Net profit per unit</li><li>Net margin</li><li>Total 30-day profit</li></ul>
+            </article>
+            <article class="feature-card">
+              <div class="icon">02</div>
+              <strong>Profit per labor hour</strong>
+              <p>See whether a product is worth making based on the time it consumes, not only the revenue it generates.</p>
+              <ul><li>Labor minutes per SKU</li><li>Target hourly wage logic</li><li>Low-profit/hour alerts</li></ul>
+            </article>
+            <article class="feature-card">
+              <div class="icon">03</div>
+              <strong>Inventory and reorder signals</strong>
+              <p>Use lead time, average daily sales, demand variability and service level to prevent avoidable stockouts.</p>
+              <ul><li>Safety stock</li><li>Reorder point</li><li>Suggested order quantity</li></ul>
+            </article>
+            <article class="feature-card">
+              <div class="icon">04</div>
+              <strong>Pricing test workflow</strong>
+              <p>Try a price increase scenario before changing your marketplace listings and see if the economics improve.</p>
+              <ul><li>Default price increase setting</li><li>New margin estimate</li><li>New profit/hour estimate</li></ul>
+            </article>
+            <article class="feature-card">
+              <div class="icon">05</div>
+              <strong>CSV-friendly sales input</strong>
+              <p>Paste marketplace sales exports into a staging area, then map clean rows into the sales input sheet.</p>
+              <ul><li>Flexible CSV paste area</li><li>Sales history table</li><li>Channel and notes fields</li></ul>
+            </article>
+            <article class="feature-card">
+              <div class="icon">06</div>
+              <strong>Weekly report and checklist</strong>
+              <p>Turn analysis into action with a weekly summary, priority list and decision-focused review routine.</p>
+              <ul><li>Auto summary copy</li><li>Priority action list</li><li>Done checklist</li></ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="calculator">
+        <div class="container calculator-wrap">
+          <div class="calc-card">
+            <div class="section-kicker">Interactive preview</div>
+            <h3>Estimate whether one product is worth making.</h3>
+            <p>This mini calculator mirrors the product logic at a simple level. The full planner applies it across your SKU list and adds reorder, pricing and weekly reporting.</p>
+            <div class="input-grid">
+              <label>Selling price<input id="price" type="number" value="32" min="0" step="0.01" /></label>
+              <label>Material cost<input id="material" type="number" value="8.50" min="0" step="0.01" /></label>
+              <label>Packaging cost<input id="packaging" type="number" value="1.60" min="0" step="0.01" /></label>
+              <label>Shipping cost<input id="shipping" type="number" value="4.00" min="0" step="0.01" /></label>
+              <label>Labor minutes<input id="labor" type="number" value="75" min="1" step="1" /></label>
+              <label>Ad spend / unit<input id="ad" type="number" value="1.50" min="0" step="0.01" /></label>
+            </div>
+          </div>
+          <div class="result-panel">
+            <div class="section-kicker" style="color:#ffd79f;">Estimated output</div>
+            <h2 style="font-size:clamp(30px,4vw,48px);">Your product economics</h2>
+            <div class="result-grid">
+              <div class="result-box"><small>Net profit / unit</small><strong id="profitUnit">$0.00</strong></div>
+              <div class="result-box"><small>Net margin</small><strong id="margin">0%</strong></div>
+              <div class="result-box"><small>Profit / labor hour</small><strong id="profitHour">$0.00</strong></div>
+              <div class="result-box"><small>Estimated fees</small><strong id="fees">$0.00</strong></div>
+            </div>
+            <div class="decision-output" id="decisionText">Calculating...</div>
+            <div class="calc-note">Assumptions: listing fee $0.20, transaction fee 6.5%, payment fee 3% + $0.25. Edit these in the full planner settings.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-head">
+            <div class="section-kicker">How it works</div>
+            <h2>From messy sales data to weekly decisions in four steps.</h2>
+          </div>
+          <div class="steps">
+            <article class="step-card"><strong>Add your products</strong><p>Enter each SKU, price, costs, labor time, stock, lead time and target hourly wage.</p></article>
+            <article class="step-card"><strong>Paste sales history</strong><p>Use the CSV staging area or clean sales input table to add recent marketplace orders.</p></article>
+            <article class="step-card"><strong>Review decisions</strong><p>Open the dashboard and product analysis to see Keep, Raise Price, Restock, Stop and Order Now signals.</p></article>
+            <article class="step-card"><strong>Run the weekly checklist</strong><p>Use the weekly report to prioritize the next actions before making, buying or editing listings.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container who-grid">
+          <div class="fit-card good">
+            <h3>Best fit for</h3>
+            <ul>
+              <li>Handmade sellers with roughly 10–100 products or variants.</li>
+              <li>Etsy-style shops where labor time matters as much as material cost.</li>
+              <li>Sellers who need clearer pricing, restocking and product-line decisions.</li>
+              <li>Shop owners who can export or paste sales history manually.</li>
+            </ul>
+          </div>
+          <div class="fit-card dark">
+            <h3>Not built for</h3>
+            <ul>
+              <li>Large warehouses with multi-location inventory and ERP requirements.</li>
+              <li>Fully automatic marketplace sync without manual CSV handling.</li>
+              <li>Accounting, tax filing or bookkeeping replacement.</li>
+              <li>Sellers who only want a pretty planner with no operating logic.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="pricing">
+        <div class="container">
+          <div class="section-head">
+            <div class="section-kicker">Get access</div>
+            <h2>Start free. Upgrade when you need to analyze your full shop.</h2>
+            <p>The workbook already includes member access, changelog, update/support structure and a future web app beta path.</p>
+          </div>
+          <div class="pricing-grid">
+            <article class="pricing-card">
+              <span class="badge">Demo</span>
+              <div class="price">$0</div>
+              <p>For sellers who want to understand the workflow before upgrading.</p>
+              <ul>
+                <li>Product workflow preview</li>
+                <li>Calculator-style sample logic</li>
+                <li>Full access for up to 3 products</li>
+                <li>Upgrade when you need unlimited products</li>
+              </ul>
+              <a class="btn btn-secondary" href="#calculator">Start Free</a>
+              <p class="price-note">No card required. Use every module with up to 3 products.</p>
+            </article>
+            <article class="pricing-card featured">
+              <span class="badge">Full product</span>
+              <div class="price">Add your price</div>
+              <p>Full Mavenory Systems Profit Planner workbook for active weekly shop decisions.</p>
+              <ul>
+                <li>Dashboard, Product Input and Sales Input</li>
+                <li>Product Analysis decision engine</li>
+                <li>Reorder Planner with safety stock and reorder point logic</li>
+                <li>Pricing Simulator for price increase tests</li>
+                <li>Variant Comparison and Weekly Report</li>
+                <li>Member Access, Changelog and update/support structure</li>
+              </ul>
+              <a class="btn btn-primary" href="/app">Open Full Planner</a>
+              <p class="price-note">Replace the button URL with your Lemon Squeezy checkout link when ready.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="faq">
+        <div class="container">
+          <div class="section-head">
+            <div class="section-kicker">FAQ</div>
+            <h2>Clear expectations before purchase.</h2>
+          </div>
+          <div class="faq-grid">
+            <article class="faq-card"><h3>Is this only for Etsy?</h3><p>No. The wording is Etsy-friendly, but the logic works for any small handmade shop that can provide product costs, labor time and sales rows.</p></article>
+            <article class="faq-card"><h3>Does it automatically import CSV files?</h3><p>The current version includes a CSV paste/staging workflow. It is flexible across marketplace exports, but it is not a fully automatic integration.</p></article>
+            <article class="faq-card"><h3>How many products can it handle?</h3><p>The planner version is designed around up to 100 products before custom expansion.</p></article>
+            <article class="faq-card"><h3>What decisions does it produce?</h3><p>It turns SKU performance into Keep, Raise Price, Restock, Stop, Test More and Order Now signals.</p></article>
+            <article class="faq-card"><h3>Is this accounting software?</h3><p>No. It is an operational planning and decision tool. It does not replace bookkeeping, tax advice or accounting software.</p></article>
+            <article class="faq-card"><h3>Will there be updates?</h3><p>The workbook includes a member access and changelog structure for updates, support and a future web app beta path.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-tight">
+        <div class="container final-cta">
+          <div>
+            <h2>Build the habit your shop actually needs: one weekly profit and reorder review.</h2>
+            <p>Replace gut-feel product decisions with a repeatable system for pricing, stocking and focusing your production time.</p>
+          </div>
+          <a class="btn btn-primary" href="/app">Start Free</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container footer-row">
+        <div>© <span id="year"></span> Mavenory Systems. Built for handmade sellers who want clearer operating decisions.</div>
+        <div class="footer-links">
+          <a href="#problem">Problem</a>
+          <a href="#modules">Modules</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#faq">FAQ</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+    const percent = new Intl.NumberFormat('en-US', { style: 'percent', maximumFractionDigits: 0 });
+
+    function value(id) {
+      const raw = Number(document.getElementById(id).value);
+      return Number.isFinite(raw) ? raw : 0;
+    }
+
+    function calculate() {
+      const price = value('price');
+      const material = value('material');
+      const packaging = value('packaging');
+      const shipping = value('shipping');
+      const labor = Math.max(value('labor'), 1);
+      const ad = value('ad');
+      const listingFee = 0.20;
+      const transactionFee = price * 0.065;
+      const paymentFee = price * 0.03 + 0.25;
+      const fees = listingFee + transactionFee + paymentFee;
+      const variableCosts = material + packaging + shipping + ad + fees;
+      const profit = price - variableCosts;
+      const margin = price > 0 ? profit / price : 0;
+      const profitHour = profit / (labor / 60);
+
+      document.getElementById('profitUnit').textContent = money.format(profit);
+      document.getElementById('margin').textContent = percent.format(margin);
+      document.getElementById('profitHour').textContent = money.format(profitHour);
+      document.getElementById('fees').textContent = money.format(fees);
+
+      const decision = document.getElementById('decisionText');
+      if (profitHour >= 20 && margin >= 0.30) {
+        decision.textContent = 'Decision preview: Keep or scale. This product looks healthy based on hourly profit and margin.';
+      } else if (profitHour >= 15 && margin >= 0.20) {
+        decision.textContent = 'Decision preview: Watch. Economics are acceptable, but review stock and demand before scaling.';
+      } else if (profitHour < 15 && margin >= 0.20) {
+        decision.textContent = 'Decision preview: Raise price or reduce labor. The product may be consuming too much production time.';
+      } else {
+        decision.textContent = 'Decision preview: Fix before scaling. Margin and/or hourly profit are below a healthy threshold.';
+      }
+    }
+
+    ['price', 'material', 'packaging', 'shipping', 'labor', 'ad'].forEach(id => {
+      document.getElementById(id).addEventListener('input', calculate);
+    });
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+    calculate();
+  </script>
+</body>
+</html>
