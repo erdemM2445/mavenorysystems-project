@@ -7,7 +7,7 @@ window.MAVENORY_CONFIG = {
 
   // Replace these two values before going live:
   SUPABASE_URL="https://wibwnhjtxbhzcfoxnszo.supabase.co",
-  SUPABASE_PUBLISHABLE_KEY="sb_secret_4byERPDV10l-064qEMIwSw_MelNirex",
+  SUPABASE_PUBLISHABLE_KEY="sb_publishable_n90GPH9n2hOoz6DzTkydPA_IQ3c1fz8",
 
 
   CURRENCY: "USD",
