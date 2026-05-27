@@ -32,7 +32,7 @@
       <div class="card price-card">
         <span class="tag full">Recommended</span>
         <h2>Full Planner Monthly</h2>
-        <div class="price" id="priceLabel">$9/month</div>
+        <div class="price" id="priceLabel">$14.99/month</div>
         <p class="muted">Payments are temporarily unavailable while we complete final testing. For early access, please contact us at <a href="mailto:mavenorysystems@gmail.com">mavenorysystems@gmail.com</a>.</p>
         <div id="upgradeNotice" class="notice success-note">Payments are temporarily unavailable while we complete final testing. For early access, please contact us at <a href="mailto:mavenorysystems@gmail.com">mavenorysystems@gmail.com</a>.</div>
         <button id="upgradeNow" class="btn btn-primary" style="width:100%">Payments temporarily unavailable</button><br><br>
@@ -45,7 +45,7 @@
   <script>
     const CFG = window.MAVENORY_CONFIG || {};
     const notice = document.getElementById('upgradeNotice');
-    document.getElementById('priceLabel').textContent = CFG.FULL_PRICE_LABEL || '$9/month';
+    document.getElementById('priceLabel').textContent = CFG.FULL_PRICE_LABEL || '$14.99/month';
     document.getElementById('upgradeNow').addEventListener('click', () => {
       notice.innerHTML = 'Payments are temporarily unavailable while we complete final testing. For early access, please contact us at <a href="mailto:mavenorysystems@gmail.com">mavenorysystems@gmail.com</a>.';
       notice.className = 'notice success-note';
