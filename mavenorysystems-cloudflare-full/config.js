@@ -11,5 +11,5 @@ window.MAVENORY_CONFIG = {
 
   CURRENCY: "USD",
   SUPPORT_EMAIL: "support@mavenorysystems.com",
-  FULL_PRICE_LABEL: "$9/month"
+  FULL_PRICE_LABEL: "$14.99/month"
 };
